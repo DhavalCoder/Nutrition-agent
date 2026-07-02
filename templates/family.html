@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% block title %}NutriGuru — Family Profiles{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+
+  <div class="text-center mb-5 animate__animated animate__fadeInDown">
+    <h1 class="page-title">👨‍👩‍👧‍👦 Family Diet Manager</h1>
+    <p class="text-muted">Manage nutrition for every family member and generate a unified family meal plan</p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Add Member Form ─────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+      <div class="glass-card p-4">
+        <h5 class="fw-bold mb-4"><i class="bi bi-person-plus me-2 text-success"></i>Add Family Member</h5>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Name</label>
+          <input type="text" class="form-control custom-input" id="memberName" placeholder="e.g. Priya, Rahul, Dadi">
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label fw-semibold">Age</label>
+            <input type="number" class="form-control custom-input" id="memberAge" placeholder="Age" min="1" max="100">
+          </div>
+          <div class="col-6">
+            <label class="form-label fw-semibold">Gender</label>
+            <select class="form-select custom-input" id="memberGender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nutrition Goal</label>
+          <select class="form-select custom-input" id="memberGoal">
+            <option value="healthy eating">Healthy Eating</option>
+            <option value="lose weight">Lose Weight</option>
+            <option value="gain weight">Gain Weight</option>
+            <option value="gain muscle">Gain Muscle</option>
+            <option value="manage diabetes">Manage Diabetes</option>
+            <option value="heart health">Heart Health</option>
+            <option value="growth and development">Growth & Development (Child)</option>
+            <option value="bone health">Bone Health (Senior)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Health Conditions</label>
+          <input type="text" class="form-control custom-input" id="memberConditions"
+            placeholder="e.g. diabetes, hypertension, none">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Allergies</label>
+          <input type="text" class="form-control custom-input" id="memberAllergies"
+            placeholder="e.g. peanuts, dairy, none">
+        </div>
+
+        <button class="btn btn-success w-100" onclick="addMember()">
+          <i class="bi bi-plus-circle me-2"></i>Add Member
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Members List & Plan ─────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+
+      <!-- Family Members Grid -->
+      <div id="familyGrid" class="row g-3 mb-4">
+        <!-- Members inserted by JS -->
+        <div class="col-12 text-center text-muted py-4" id="noMembersMsg">
+          <div style="font-size:3rem">👨‍👩‍👧‍👦</div>
+          <p class="mt-2">No family members added yet.<br>Add your first member on the left!</p>
+        </div>
+      </div>
+
+      <!-- Generate Plan Button -->
+      <div id="generateBtnSection" class="d-none mb-4">
+        <button class="btn btn-primary w-100 py-3" id="familyPlanBtn" onclick="generateFamilyPlan()">
+          <i class="bi bi-magic me-2"></i>Generate Family Meal Plan
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div id="familyLoading" class="glass-card p-5 text-center d-none">
+        <div style="font-size:3rem" class="mb-3">👨‍🍳</div>
+        <h5 class="fw-bold">Creating Your Family Plan...</h5>
+        <p class="text-muted">NutriGuru is crafting a plan that works for everyone</p>
+        <div class="progress mt-3" style="height:6px">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success w-100"></div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div id="familyResult" class="d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">🏠 Family Nutrition Plan</h5>
+          <button class="btn btn-sm btn-outline-success" onclick="copyFamilyPlan()">
+            <i class="bi bi-clipboard me-1"></i>Copy
+          </button>
+        </div>
+        <div class="glass-card p-4 meal-plan-output" id="familyPlanContent"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let familyMembers = [];
+
+function addMember() {
+  const name       = document.getElementById('memberName').value.trim();
+  const age        = document.getElementById('memberAge').value;
+  const gender     = document.getElementById('memberGender').value;
+  const goal       = document.getElementById('memberGoal').value;
+  const conditions = document.getElementById('memberConditions').value || 'none';
+  const allergies  = document.getElementById('memberAllergies').value  || 'none';
+
+  if (!name || !age) { showToast('Please enter at least a name and age.', 'warning'); return; }
+
+  const member = { id: Date.now(), name, age: parseInt(age), gender, goal, conditions, allergies };
+  familyMembers.push(member);
+  renderMembers();
+  clearAddForm();
+  showToast(`${name} added to family! 👍`, 'success');
+}
+
+function renderMembers() {
+  const grid = document.getElementById('familyGrid');
+  const noMsg = document.getElementById('noMembersMsg');
+  const genSection = document.getElementById('generateBtnSection');
+
+  if (familyMembers.length === 0) {
+    grid.innerHTML = '';
+    grid.appendChild(noMsg);
+    noMsg.classList.remove('d-none');
+    genSection.classList.add('d-none');
+    return;
+  }
+
+  noMsg.classList.add('d-none');
+  genSection.classList.remove('d-none');
+
+  const cards = familyMembers.map(m => {
+    const emoji = m.age < 13 ? '👶' : m.age > 60 ? '👴' : m.gender === 'female' ? '👩' : '👨';
+    const condBadge = m.conditions !== 'none' ? `<span class="badge bg-warning-subtle text-warning me-1">${m.conditions}</span>` : '';
+    const allergyBadge = m.allergies !== 'none' ? `<span class="badge bg-danger-subtle text-danger">⚠️ ${m.allergies}</span>` : '';
+    return `
+      <div class="col-sm-6 col-md-4 animate__animated animate__fadeInUp">
+        <div class="member-card glass-card p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="member-emoji">${emoji}</div>
+            <button class="btn btn-sm btn-link text-danger p-0" onclick="removeMember(${m.id})">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+          <h6 class="fw-bold mt-2 mb-1">${m.name}</h6>
+          <div class="text-muted small mb-2">${m.age} yrs • ${m.gender}</div>
+          <div class="mb-1"><span class="badge bg-success-subtle text-success">🎯 ${m.goal}</span></div>
+          <div>${condBadge}${allergyBadge}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  grid.innerHTML = cards;
+}
+
+function removeMember(id) {
+  familyMembers = familyMembers.filter(m => m.id !== id);
+  renderMembers();
+  if (familyMembers.length === 0) {
+    document.getElementById('familyResult').classList.add('d-none');
+  }
+}
+
+function clearAddForm() {
+  ['memberName','memberAge','memberConditions','memberAllergies'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+function generateFamilyPlan() {
+  if (familyMembers.length === 0) { showToast('Add at least one family member first.', 'warning'); return; }
+
+  document.getElementById('familyResult').classList.add('d-none');
+  document.getElementById('familyLoading').classList.remove('d-none');
+  document.getElementById('familyPlanBtn').disabled = true;
+
+  fetch('/api/family-plan', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ members: familyMembers })
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('familyPlanContent').innerHTML = marked.parse(data.family_plan || 'No plan generated.');
+    document.getElementById('familyLoading').classList.add('d-none');
+    document.getElementById('familyResult').classList.remove('d-none');
+    showToast('Family plan ready! 🏠', 'success');
+  })
+  .catch(() => {
+    document.getElementById('familyLoading').classList.add('d-none');
+    showToast('Error generating plan. Please try again.', 'danger');
+  })
+  .finally(() => { document.getElementById('familyPlanBtn').disabled = false; });
+}
+
+function copyFamilyPlan() {
+  const text = document.getElementById('familyPlanContent').innerText;
+  navigator.clipboard.writeText(text).then(() => showToast('Family plan copied! 📋', 'success'));
+}
+
+// Pre-load example family
+window.addEventListener('DOMContentLoaded', () => renderMembers());
+</script>
+{% endblock %}

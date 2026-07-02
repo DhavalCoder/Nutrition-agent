@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}NutriGuru — Meal Planner{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+
+  <div class="text-center mb-5 animate__animated animate__fadeInDown">
+    <h1 class="page-title">🗓️ Smart Meal Planner</h1>
+    <p class="text-muted">Generate personalised Indian meal plans powered by AI</p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Plan Form ───────────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+      <div class="glass-card p-4 sticky-lg-top" style="top:80px">
+        <h5 class="fw-bold mb-4"><i class="bi bi-sliders me-2 text-success"></i>Customise Your Plan</h5>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Plan Duration</label>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-sm day-btn active" data-days="1" onclick="setDays(1, this)">1 Day</button>
+            <button class="btn btn-sm day-btn" data-days="3" onclick="setDays(3, this)">3 Days</button>
+            <button class="btn btn-sm day-btn" data-days="5" onclick="setDays(5, this)">5 Days</button>
+            <button class="btn btn-sm day-btn" data-days="7" onclick="setDays(7, this)">7 Days</button>
+          </div>
+          <input type="hidden" id="selectedDays" value="1">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Daily Calories: <span id="calorieLabel" class="text-success">2000</span> kcal</label>
+          <input type="range" class="form-range accent-range" id="calorieSlider" min="1200" max="3500" step="50" value="2000"
+            oninput="document.getElementById('calorieLabel').textContent=this.value">
+          <div class="d-flex justify-content-between small text-muted">
+            <span>1200</span><span>3500</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Diet Type</label>
+          <select class="form-select custom-input" id="dietType">
+            <option value="balanced">Balanced</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="high-protein">High Protein</option>
+            <option value="low-carb">Low Carb</option>
+            <option value="diabetic-friendly">Diabetic Friendly</option>
+            <option value="heart-healthy">Heart Healthy</option>
+            <option value="weight-loss">Weight Loss</option>
+            <option value="muscle-gain">Muscle Gain</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Your Goal</label>
+          <select class="form-select custom-input" id="goalSelect">
+            <option value="maintain weight">Maintain Weight</option>
+            <option value="lose weight gradually">Lose Weight (Gradual)</option>
+            <option value="gain muscle mass">Gain Muscle</option>
+            <option value="improve energy levels">Improve Energy</option>
+            <option value="manage blood sugar">Manage Blood Sugar</option>
+            <option value="improve heart health">Improve Heart Health</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Cuisine Preference</label>
+          <select class="form-select custom-input" id="cuisineSelect">
+            <option value="North Indian">North Indian</option>
+            <option value="South Indian">South Indian</option>
+            <option value="Bengali">Bengali</option>
+            <option value="Gujarati">Gujarati</option>
+            <option value="Maharashtrian">Maharashtrian</option>
+            <option value="Pan-Indian">Pan-Indian (Mix)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Budget</label>
+          <select class="form-select custom-input" id="budgetSelect">
+            <option value="budget-friendly (under ₹200/day)">Budget (under ₹200/day)</option>
+            <option value="moderate (₹200-500/day)" selected>Moderate (₹200-500/day)</option>
+            <option value="premium (₹500+/day)">Premium (₹500+/day)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Allergies / Restrictions</label>
+          <input type="text" class="form-control custom-input" id="allergiesInput"
+            placeholder="e.g. peanuts, dairy, gluten">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Health Conditions</label>
+          <input type="text" class="form-control custom-input" id="conditionsInput"
+            placeholder="e.g. diabetes, hypertension, PCOS">
+        </div>
+
+        <button class="btn btn-primary w-100 py-3 generate-btn" id="generateBtn" onclick="generateMealPlan()">
+          <i class="bi bi-magic me-2"></i>Generate Meal Plan
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Result Area ─────────────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+      <!-- Placeholder -->
+      <div id="mealPlanPlaceholder" class="glass-card p-5 text-center">
+        <div class="placeholder-icon mb-3">🍱</div>
+        <h4 class="fw-bold mb-2">Your Meal Plan Appears Here</h4>
+        <p class="text-muted">Configure your preferences on the left and click <strong>Generate Meal Plan</strong> to get a personalised AI-powered plan with Indian recipes, calories, and macros.</p>
+        <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+          <span class="info-pill">🥗 5 meals/day</span>
+          <span class="info-pill">🇮🇳 Indian cuisine</span>
+          <span class="info-pill">🔢 Calorie counted</span>
+          <span class="info-pill">💪 Macro tracked</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="mealPlanLoading" class="glass-card p-5 text-center d-none">
+        <div class="cooking-animation mb-3">👨‍🍳</div>
+        <h4 class="fw-bold mb-2">Cooking Up Your Plan...</h4>
+        <p class="text-muted">NutriGuru AI is crafting your personalised meal plan</p>
+        <div class="progress mt-4" style="height:6px">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success w-100"></div>
+        </div>
+        <div class="mt-3 d-flex justify-content-center gap-2 flex-wrap">
+          <span class="loading-step active" id="step1">📋 Planning...</span>
+          <span class="loading-step" id="step2">🍳 Selecting recipes...</span>
+          <span class="loading-step" id="step3">🔢 Calculating macros...</span>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div id="mealPlanResult" class="d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">📋 Your Personalised Meal Plan</h5>
+          <button class="btn btn-sm btn-outline-success" onclick="copyMealPlan()">
+            <i class="bi bi-clipboard me-1"></i>Copy
+          </button>
+        </div>
+        <div class="glass-card p-4 meal-plan-output" id="mealPlanContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let selectedDays = 1;
+
+function setDays(days, btn) {
+  selectedDays = days;
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function generateMealPlan() {
+  const btn = document.getElementById('generateBtn');
+  document.getElementById('mealPlanPlaceholder').classList.add('d-none');
+  document.getElementById('mealPlanResult').classList.add('d-none');
+  document.getElementById('mealPlanLoading').classList.remove('d-none');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+
+  // Animate loading steps
+  let step = 1;
+  const stepTimer = setInterval(() => {
+    document.querySelectorAll('.loading-step').forEach(s => s.classList.remove('active'));
+    if (step <= 3) { document.getElementById('step' + step).classList.add('active'); step++; }
+  }, 1500);
+
+  fetch('/api/meal-plan', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      days:       selectedDays,
+      calories:   parseInt(document.getElementById('calorieSlider').value),
+      diet_type:  document.getElementById('dietType').value,
+      goal:       document.getElementById('goalSelect').value,
+      cuisine:    document.getElementById('cuisineSelect').value,
+      budget:     document.getElementById('budgetSelect').value,
+      allergies:  document.getElementById('allergiesInput').value || 'none',
+      conditions: document.getElementById('conditionsInput').value || 'none',
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    clearInterval(stepTimer);
+    document.getElementById('mealPlanContent').innerHTML = marked.parse(data.meal_plan || 'No plan generated.');
+    document.getElementById('mealPlanLoading').classList.add('d-none');
+    document.getElementById('mealPlanResult').classList.remove('d-none');
+    showToast('Meal plan generated! 🎉', 'success');
+  })
+  .catch(() => {
+    clearInterval(stepTimer);
+    document.getElementById('mealPlanLoading').classList.add('d-none');
+    document.getElementById('mealPlanPlaceholder').classList.remove('d-none');
+    showToast('Error generating plan. Please try again.', 'danger');
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-magic me-2"></i>Generate Meal Plan';
+  });
+}
+
+function copyMealPlan() {
+  const text = document.getElementById('mealPlanContent').innerText;
+  navigator.clipboard.writeText(text).then(() => showToast('Meal plan copied to clipboard! 📋', 'success'));
+}
+</script>
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% block title %}NutriGuru — AI Chat{% endblock %}
+
+{% block content %}
+<div class="chat-page">
+  <div class="container-fluid h-100">
+    <div class="row h-100 g-0">
+
+      <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+      <div class="col-lg-3 chat-sidebar d-none d-lg-flex flex-column p-4">
+        <div class="mb-4">
+          <h5 class="fw-bold mb-1">🥗 NutriGuru Chat</h5>
+          <p class="text-muted small">AI-powered nutrition assistant</p>
+        </div>
+
+        <!-- Quick Profile Form -->
+        <div class="glass-card p-3 mb-4">
+          <h6 class="mb-3 fw-semibold"><i class="bi bi-person-circle me-2 text-success"></i>My Profile</h6>
+          <div class="row g-2">
+            <div class="col-12">
+              <input type="text" class="form-control form-control-sm custom-input" id="profileName" placeholder="Your name">
+            </div>
+            <div class="col-6">
+              <input type="number" class="form-control form-control-sm custom-input" id="profileAge" placeholder="Age">
+            </div>
+            <div class="col-6">
+              <select class="form-select form-select-sm custom-input" id="profileGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <input type="number" class="form-control form-control-sm custom-input" id="profileWeight" placeholder="Weight (kg)">
+            </div>
+            <div class="col-6">
+              <input type="number" class="form-control form-control-sm custom-input" id="profileHeight" placeholder="Height (cm)">
+            </div>
+            <div class="col-12">
+              <select class="form-select form-select-sm custom-input" id="profileGoal">
+                <option value="lose weight">Lose Weight</option>
+                <option value="gain muscle">Gain Muscle</option>
+                <option value="maintain weight">Maintain Weight</option>
+                <option value="improve health">Improve Health</option>
+                <option value="manage diabetes">Manage Diabetes</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control form-control-sm custom-input" id="profileAllergies" placeholder="Allergies (e.g. peanuts)">
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control form-control-sm custom-input" id="profileConditions" placeholder="Health conditions">
+            </div>
+            <div class="col-12">
+              <button class="btn btn-success btn-sm w-100" onclick="saveProfile()">
+                <i class="bi bi-check-circle me-1"></i>Save Profile
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Prompts -->
+        <div class="mb-3">
+          <h6 class="fw-semibold mb-2"><i class="bi bi-lightning me-2 text-warning"></i>Quick Prompts</h6>
+          <div class="d-flex flex-column gap-2">
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What should I eat for breakfast as an Indian vegetarian?')">🌅 Vegetarian Breakfast Ideas</button>
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Give me a high protein Indian meal plan for muscle gain')">💪 High Protein Plan</button>
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What are the healthiest Indian spices and their benefits?')">🌶️ Spice Health Benefits</button>
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Create a diabetic-friendly Indian diet plan')">🏥 Diabetic Diet Plan</button>
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What is the calorie count of a typical Indian thali?')">🍱 Thali Calories</button>
+            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Healthy swaps for Indian street food')">🥙 Healthy Street Food</button>
+          </div>
+        </div>
+
+        <div class="mt-auto">
+          <button class="btn btn-outline-danger btn-sm w-100" onclick="clearChat()">
+            <i class="bi bi-trash me-1"></i>Clear Chat
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Chat Area ───────────────────────────────────────────────────── -->
+      <div class="col-lg-9 d-flex flex-column chat-main">
+
+        <!-- Chat Header -->
+        <div class="chat-header d-flex align-items-center justify-content-between px-4 py-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="agent-avatar">🥗</div>
+            <div>
+              <div class="fw-semibold">NutriGuru AI</div>
+              <div class="text-success small d-flex align-items-center gap-1">
+                <span class="status-dot"></span>Online
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas">
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="clearChat()">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages flex-grow-1 overflow-auto px-4 py-3" id="chatMessages">
+          <!-- Welcome message -->
+          <div class="message-row bot-row animate__animated animate__fadeInUp">
+            <div class="message-avatar">🥗</div>
+            <div class="message-bubble bot-bubble">
+              <p class="mb-1">🙏 <strong>Namaste! I'm NutriGuru</strong>, your personal AI nutrition expert!</p>
+              <p class="mb-1">I can help you with:</p>
+              <ul class="mb-1">
+                <li>🥗 Personalised meal plans (Indian cuisine specialist)</li>
+                <li>🔢 Calorie & macro analysis</li>
+                <li>💊 Nutrition for health conditions (diabetes, PCOS, etc.)</li>
+                <li>👨‍👩‍👧 Family diet management</li>
+                <li>🌶️ Benefits of Indian spices & superfoods</li>
+              </ul>
+              <p class="mb-0">Fill in your profile on the left for personalised advice, or just start chatting! 😊</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator d-none px-4" id="typingIndicator">
+          <div class="message-row bot-row">
+            <div class="message-avatar">🥗</div>
+            <div class="message-bubble bot-bubble typing-bubble">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area px-4 py-3">
+          <div class="d-flex gap-2 align-items-end">
+            <textarea
+              class="form-control custom-input chat-textarea"
+              id="chatInput"
+              rows="1"
+              placeholder="Ask about nutrition, meal plans, calories, Indian food..."
+              onkeydown="handleChatKeydown(event)"
+              oninput="autoResize(this)"
+            ></textarea>
+            <button class="btn btn-primary send-btn" id="sendBtn" onclick="sendMessage()">
+              <i class="bi bi-send-fill"></i>
+            </button>
+          </div>
+          <div class="text-muted small mt-2 text-center">
+            Press <kbd>Enter</kbd> to send &bull; <kbd>Shift+Enter</kbd> for new line
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Profile Offcanvas -->
+<div class="offcanvas offcanvas-start" id="profileOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">My Profile</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="row g-2">
+      <div class="col-12"><input type="text" class="form-control custom-input" id="mProfileName" placeholder="Your name"></div>
+      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileAge" placeholder="Age"></div>
+      <div class="col-6">
+        <select class="form-select custom-input" id="mProfileGender">
+          <option value="male">Male</option><option value="female">Female</option>
+        </select>
+      </div>
+      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileWeight" placeholder="Weight (kg)"></div>
+      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileHeight" placeholder="Height (cm)"></div>
+      <div class="col-12">
+        <select class="form-select custom-input" id="mProfileGoal">
+          <option>Lose Weight</option><option>Gain Muscle</option><option>Maintain Weight</option>
+        </select>
+      </div>
+      <div class="col-12"><input type="text" class="form-control custom-input" id="mProfileAllergies" placeholder="Allergies"></div>
+      <div class="col-12"><button class="btn btn-success w-100" onclick="saveProfile()">Save Profile</button></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function handleChatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg   = input.value.trim();
+  if (!msg) return;
+  appendMessage(msg, 'user');
+  input.value = '';
+  input.style.height = 'auto';
+  showTyping(true);
+  document.getElementById('sendBtn').disabled = true;
+
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ message: msg })
+  })
+  .then(r => r.json())
+  .then(data => { showTyping(false); appendMessage(data.reply || 'No response.', 'bot'); })
+  .catch(() => { showTyping(false); appendMessage('⚠️ Connection error. Please try again.', 'bot'); })
+  .finally(() => { document.getElementById('sendBtn').disabled = false; });
+}
+
+function sendQuickPrompt(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+function appendMessage(text, sender) {
+  const container = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = `message-row ${sender === 'user' ? 'user-row' : 'bot-row'} animate__animated animate__fadeInUp`;
+  const avatar = sender === 'user' ? '👤' : '🥗';
+  const bubbleClass = sender === 'user' ? 'user-bubble' : 'bot-bubble';
+  row.innerHTML = `
+    ${sender === 'bot' ? `<div class="message-avatar">${avatar}</div>` : ''}
+    <div class="message-bubble ${bubbleClass}">${marked.parse(text)}</div>
+    ${sender === 'user' ? `<div class="message-avatar">${avatar}</div>` : ''}
+  `;
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typingIndicator').classList.toggle('d-none', !show);
+  const msgs = document.getElementById('chatMessages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function clearChat() {
+  fetch('/api/clear-chat', { method: 'POST' })
+    .then(() => {
+      document.getElementById('chatMessages').innerHTML = `
+        <div class="message-row bot-row animate__animated animate__fadeIn">
+          <div class="message-avatar">🥗</div>
+          <div class="message-bubble bot-bubble">Chat cleared! How can I help you with your nutrition today? 🌟</div>
+        </div>`;
+      showToast('Chat cleared!', 'success');
+    });
+}
+
+function saveProfile() {
+  const profile = {
+    name:       document.getElementById('profileName').value || document.getElementById('mProfileName')?.value,
+    age:        document.getElementById('profileAge').value  || document.getElementById('mProfileAge')?.value,
+    gender:     document.getElementById('profileGender').value,
+    weight:     document.getElementById('profileWeight').value || document.getElementById('mProfileWeight')?.value,
+    height:     document.getElementById('profileHeight').value || document.getElementById('mProfileHeight')?.value,
+    goal:       document.getElementById('profileGoal').value,
+    allergies:  document.getElementById('profileAllergies').value,
+    conditions: document.getElementById('profileConditions')?.value || '',
+  };
+  fetch('/api/set-profile', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(profile)
+  }).then(() => showToast('Profile saved! Responses will now be personalised for you. 🎯', 'success'));
+}
+</script>
+{% endblock %}

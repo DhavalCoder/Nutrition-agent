@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}NutriGuru — BMI Calculator{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+
+  <div class="text-center mb-5 animate__animated animate__fadeInDown">
+    <h1 class="page-title">⚖️ BMI & Health Calculator</h1>
+    <p class="text-muted">Calculate your BMI, metabolic rate, and get personalised AI health insights</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+
+    <!-- ── Calculator Form ─────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+      <div class="glass-card p-4">
+        <h5 class="fw-bold mb-4"><i class="bi bi-calculator me-2 text-success"></i>Your Details</h5>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Weight (kg)</label>
+          <div class="input-group">
+            <input type="number" class="form-control custom-input" id="weight" placeholder="e.g. 70" min="20" max="300" value="70">
+            <span class="input-group-text">kg</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Height (cm)</label>
+          <div class="input-group">
+            <input type="number" class="form-control custom-input" id="height" placeholder="e.g. 170" min="100" max="250" value="170">
+            <span class="input-group-text">cm</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Age</label>
+          <input type="number" class="form-control custom-input" id="age" placeholder="e.g. 30" min="5" max="100" value="30">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Gender</label>
+          <div class="d-flex gap-2">
+            <button class="btn gender-btn active w-50" data-gender="male" onclick="setGender('male', this)">
+              <i class="bi bi-gender-male me-1"></i>Male
+            </button>
+            <button class="btn gender-btn w-50" data-gender="female" onclick="setGender('female', this)">
+              <i class="bi bi-gender-female me-1"></i>Female
+            </button>
+          </div>
+          <input type="hidden" id="selectedGender" value="male">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Activity Level</label>
+          <select class="form-select custom-input" id="activityLevel">
+            <option value="sedentary">🛋️ Sedentary (desk job, no exercise)</option>
+            <option value="light">🚶 Lightly Active (1-3 days/week)</option>
+            <option value="moderate" selected>🏃 Moderately Active (3-5 days/week)</option>
+            <option value="active">🏋️ Very Active (6-7 days/week)</option>
+            <option value="very_active">⚡ Extra Active (physical job + exercise)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary w-100 py-3" id="calcBtn" onclick="calculateBMI()">
+          <i class="bi bi-activity me-2"></i>Calculate & Analyse
+        </button>
+      </div>
+
+      <!-- Quick BMI Reference -->
+      <div class="glass-card p-4 mt-4">
+        <h6 class="fw-bold mb-3">📊 BMI Reference</h6>
+        <div class="bmi-legend">
+          <div class="bmi-range underweight"><span>Under 18.5</span><span>Underweight</span></div>
+          <div class="bmi-range normal"><span>18.5 – 24.9</span><span>Normal ✓</span></div>
+          <div class="bmi-range overweight"><span>25 – 29.9</span><span>Overweight</span></div>
+          <div class="bmi-range obese"><span>30+</span><span>Obese</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Results ─────────────────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+
+      <!-- Placeholder -->
+      <div id="bmiPlaceholder" class="glass-card p-5 text-center">
+        <div class="placeholder-icon">⚖️</div>
+        <h4 class="fw-bold mt-3 mb-2">Enter Your Details</h4>
+        <p class="text-muted">Fill in your measurements on the left and click <strong>Calculate & Analyse</strong> to get your BMI, TDEE, and personalised AI health recommendations.</p>
+      </div>
+
+      <!-- Loading -->
+      <div id="bmiLoading" class="glass-card p-5 text-center d-none">
+        <div class="mb-3" style="font-size:3rem">🔬</div>
+        <h4 class="fw-bold mb-2">Analysing Your Health...</h4>
+        <div class="progress mt-3" style="height:6px">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success w-100"></div>
+        </div>
+      </div>
+
+      <!-- BMI Result Cards -->
+      <div id="bmiResult" class="d-none">
+        <div class="row g-3 mb-4">
+          <div class="col-sm-3 col-6">
+            <div class="metric-card text-center p-3" id="bmiCard">
+              <div class="metric-icon">⚖️</div>
+              <div class="metric-value" id="bmiValue">--</div>
+              <div class="metric-label">BMI</div>
+            </div>
+          </div>
+          <div class="col-sm-3 col-6">
+            <div class="metric-card text-center p-3">
+              <div class="metric-icon">🔥</div>
+              <div class="metric-value" id="bmrValue">--</div>
+              <div class="metric-label">BMR (kcal)</div>
+            </div>
+          </div>
+          <div class="col-sm-3 col-6">
+            <div class="metric-card text-center p-3">
+              <div class="metric-icon">⚡</div>
+              <div class="metric-value" id="tdeeValue">--</div>
+              <div class="metric-label">TDEE (kcal)</div>
+            </div>
+          </div>
+          <div class="col-sm-3 col-6">
+            <div class="metric-card text-center p-3" id="categoryCard">
+              <div class="metric-icon">📊</div>
+              <div class="metric-value small" id="categoryValue">--</div>
+              <div class="metric-label">Category</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BMI Gauge -->
+        <div class="glass-card p-4 mb-4">
+          <h6 class="fw-bold mb-3">BMI Scale</h6>
+          <div class="bmi-gauge-bar">
+            <div class="bmi-gauge-fill" id="bmiGaugeFill"></div>
+            <div class="bmi-gauge-pointer" id="bmiPointer"></div>
+          </div>
+          <div class="d-flex justify-content-between small text-muted mt-1">
+            <span>10</span><span>18.5</span><span>25</span><span>30</span><span>40+</span>
+          </div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="glass-card p-4">
+          <h6 class="fw-bold mb-3"><i class="bi bi-robot me-2 text-success"></i>AI Health Analysis</h6>
+          <div id="bmiAnalysis" class="ai-response"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let selectedGender = 'male';
+
+function setGender(g, btn) {
+  selectedGender = g;
+  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function calculateBMI() {
+  const weight   = parseFloat(document.getElementById('weight').value);
+  const height   = parseFloat(document.getElementById('height').value);
+  const age      = parseInt(document.getElementById('age').value);
+  const activity = document.getElementById('activityLevel').value;
+
+  if (!weight || !height || !age) { showToast('Please fill in all fields.', 'warning'); return; }
+
+  document.getElementById('bmiPlaceholder').classList.add('d-none');
+  document.getElementById('bmiResult').classList.add('d-none');
+  document.getElementById('bmiLoading').classList.remove('d-none');
+  document.getElementById('calcBtn').disabled = true;
+
+  fetch('/api/bmi', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ weight, height, age, gender: selectedGender, activity_level: activity })
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('bmiLoading').classList.add('d-none');
+    document.getElementById('bmiResult').classList.remove('d-none');
+
+    document.getElementById('bmiValue').textContent = data.bmi;
+    document.getElementById('bmrValue').textContent = data.bmr.toLocaleString();
+    document.getElementById('tdeeValue').textContent = data.tdee.toLocaleString();
+    document.getElementById('categoryValue').textContent = data.category;
+    document.getElementById('bmiAnalysis').innerHTML = marked.parse(data.analysis || '');
+
+    // Color the category card
+    const card = document.getElementById('categoryCard');
+    const colors = { 'Underweight': 'bmi-blue', 'Normal weight': 'bmi-green', 'Overweight': 'bmi-yellow', 'Obese': 'bmi-red' };
+    card.className = 'metric-card text-center p-3 ' + (colors[data.category] || '');
+
+    // Gauge animation
+    const pct = Math.min(Math.max((data.bmi - 10) / 30 * 100, 0), 100);
+    document.getElementById('bmiPointer').style.left = pct + '%';
+
+    showToast('Analysis complete! 🎯', 'success');
+  })
+  .catch(() => {
+    document.getElementById('bmiLoading').classList.add('d-none');
+    document.getElementById('bmiPlaceholder').classList.remove('d-none');
+    showToast('Error calculating BMI. Please try again.', 'danger');
+  })
+  .finally(() => { document.getElementById('calcBtn').disabled = false; });
+}
+</script>
+{% endblock %}
