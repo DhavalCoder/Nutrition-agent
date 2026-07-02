@@ -1,218 +1,257 @@
 {% extends "base.html" %}
-{% block title %}NutriGuru — Dashboard{% endblock %}
+{% block title %}NutriGuru — AI Nutrition Intelligence{% endblock %}
 
 {% block content %}
 
-<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
-<section class="hero-section d-flex align-items-center justify-content-center" id="hero">
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-orb hero-orb-3"></div>
-  <div class="container text-center position-relative" style="z-index:2">
-
-    <!-- Badge -->
-    <div class="animate__animated animate__fadeInDown mb-4">
-      <span class="hero-badge">✨ Powered by Groq + Llama 3 &nbsp;|&nbsp; 🇮🇳 Indian Cuisine Expert</span>
-    </div>
-
-    <!-- Main Heading -->
-    <h1 class="hero-title animate__animated animate__fadeInUp mb-3"
-        style="font-size:clamp(3rem,7vw,5.5rem);font-weight:900;letter-spacing:-1px;line-height:1.1">
-      Your Personal<br>
-      <span class="gradient-text">Nutrition Intelligence</span>
-    </h1>
-
-    <!-- Subheading -->
-    <p class="animate__animated animate__fadeInUp mb-5 mx-auto"
-       style="animation-delay:.15s;font-family:'Inter',sans-serif;font-size:clamp(1rem,2.2vw,1.25rem);
-              color:var(--text-muted);max-width:640px;line-height:1.75;font-weight:400">
-      Personalised meal plans &bull; Real-time calorie analysis<br class="d-none d-md-block"/>
-      Family diet management &bull; Smart AI nutrition coaching
-    </p>
-
-    <!-- CTA Buttons -->
-    <div class="d-flex gap-3 justify-content-center flex-wrap animate__animated animate__fadeInUp"
-         style="animation-delay:.25s">
-      <a href="/chat" class="btn btn-primary btn-hero px-5 py-3"
-         style="font-size:1.1rem;border-radius:16px;background:var(--coral);border-color:var(--coral);
-                box-shadow:0 8px 30px rgba(251,110,82,0.4);font-family:'Nunito',sans-serif;font-weight:800">
-        <i class="bi bi-chat-dots-fill me-2"></i>Chat with NutriGuru
-      </a>
-      <a href="/meal-plan" class="btn btn-hero px-5 py-3"
-         style="font-size:1.1rem;border-radius:16px;background:transparent;
-                border:2px solid var(--mint);color:var(--mint);
-                font-family:'Nunito',sans-serif;font-weight:800">
-        <i class="bi bi-calendar3 me-2"></i>Generate Meal Plan
-      </a>
-    </div>
-
-    <!-- Scroll hint -->
-    <div class="mt-5 pt-3">
-      <i class="bi bi-chevron-double-down bounce" style="color:var(--mint);font-size:1.6rem"></i>
-    </div>
-
+<!-- ── Hero Section with Video Background ────────────────────────────────── -->
+<section class="ng-hero" id="hero">
+  <!-- Video Background -->
+  <div class="hero-video-wrap">
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="https://cdn.coverr.co/videos/coverr-fresh-vegetables-rotating-5279/1080p.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
   </div>
-</section>
 
-<!-- ── Stats Bar ──────────────────────────────────────────────────────────── -->
-<section class="py-5 stats-section">
-  <div class="container">
-    <div class="row g-4 text-center justify-content-center">
-      <div class="col-6 col-md-3">
-        <div class="stat-card animate__animated animate__fadeInUp">
-          <div class="stat-icon">🥗</div>
-          <div class="stat-num" data-target="500">0</div>
-          <div class="stat-label">Recipes</div>
+  <div class="container position-relative" style="z-index:10">
+    <div class="row align-items-center min-vh-100 py-5">
+      <div class="col-lg-7 mb-5 mb-lg-0">
+        
+        <!-- Badge -->
+        <div class="hero-badge fade-in-up">
+          ✨ Powered by Groq AI · 🇮🇳 Indian Food Expert
         </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay:.1s">
-          <div class="stat-icon">👨‍👩‍👧</div>
-          <div class="stat-num" data-target="10000">0</div>
-          <div class="stat-label">Families Helped</div>
+
+        <!-- Main Heading -->
+        <h1 class="hero-heading fade-in-up" style="animation-delay:.1s">
+          Your Personal<br>
+          <span class="text-gradient">Nutrition Intelligence</span>
+        </h1>
+
+        <!-- Subheading -->
+        <p class="hero-subtext fade-in-up" style="animation-delay:.2s">
+          AI-powered meal planning, real-time calorie analysis, family diet management<br class="d-none d-md-block">
+          and smart nutrition coaching — all with deep Indian cuisine expertise.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="d-flex gap-3 flex-wrap fade-in-up" style="animation-delay:.3s">
+          <a href="/chat" class="btn ng-btn-primary ng-btn-lg">
+            <i class="bi bi-chat-dots-fill me-2"></i>Chat with NutriGuru
+          </a>
+          <a href="/meal-plan" class="btn ng-btn-outline ng-btn-lg">
+            <i class="bi bi-calendar3 me-2"></i>Generate Meal Plan
+          </a>
         </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay:.2s">
-          <div class="stat-icon">🍱</div>
-          <div class="stat-num" data-target="50">0</div>
-          <div class="stat-label">Indian Cuisines</div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mt-4 fade-in-up" style="animation-delay:.4s">
+          <div class="col-4">
+            <div class="stat-mini">
+              <div class="stat-mini-num">500+</div>
+              <div class="stat-mini-label">Recipes</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-mini">
+              <div class="stat-mini-num">10K+</div>
+              <div class="stat-mini-label">Users</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-mini">
+              <div class="stat-mini-num">98%</div>
+              <div class="stat-mini-label">Satisfaction</div>
+            </div>
+          </div>
         </div>
+
       </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay:.3s">
-          <div class="stat-icon">⭐</div>
-          <div class="stat-num" data-target="98">0</div>
-          <div class="stat-label">% Satisfaction</div>
+
+      <!-- Hero Image -->
+      <div class="col-lg-5 fade-in-right">
+        <div class="hero-image-stack">
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=90&fit=crop"
+               alt="Healthy Food" class="hero-img hero-img-1" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=90&fit=crop"
+               alt="Salad Bowl" class="hero-img hero-img-2" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=90&fit=crop"
+               alt="Nutrition" class="hero-img hero-img-3" loading="lazy">
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+    <p class="scroll-text">Scroll to explore</p>
+  </div>
 </section>
 
-<!-- ── Feature Cards ──────────────────────────────────────────────────────── -->
-<section class="py-5">
+<!-- ── Features Bento Grid ─────────────────────────────────────────────────── -->
+<section class="py-6">
   <div class="container">
-    <h2 class="section-title text-center mb-5">Everything You Need</h2>
+    <div class="section-header text-center mb-5 fade-in-up">
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-subtitle">Comprehensive nutrition tools powered by AI</p>
+    </div>
+
+    <div class="bento-grid">
+      
+      <!-- Feature 1 — AI Chat (Large) -->
+      <a href="/chat" class="bento-card bento-large fade-in-up" data-color="coral">
+        <div class="bento-icon-wrap">
+          <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        <h3 class="bento-title">AI Nutrition Chat</h3>
+        <p class="bento-text">Ask anything about food, calories, healthy swaps, or meal ideas. Get instant AI-powered responses tailored to Indian cuisine.</p>
+        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80&fit=crop" 
+             alt="Chat" class="bento-img" loading="lazy">
+      </a>
+
+      <!-- Feature 2 — Meal Plan -->
+      <a href="/meal-plan" class="bento-card fade-in-up" data-color="mint" style="animation-delay:.1s">
+        <div class="bento-icon-wrap">
+          <i class="bi bi-calendar-week"></i>
+        </div>
+        <h3 class="bento-title">Meal Planner</h3>
+        <p class="bento-text">7-day personalized Indian meal plans with calories and macros.</p>
+        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&fit=crop" 
+             alt="Meal Plan" class="bento-img-sm" loading="lazy">
+      </a>
+
+      <!-- Feature 3 — BMI Calculator -->
+      <a href="/bmi" class="bento-card fade-in-up" data-color="yellow" style="animation-delay:.2s">
+        <div class="bento-icon-wrap">
+          <i class="bi bi-activity"></i>
+        </div>
+        <h3 class="bento-title">BMI & TDEE</h3>
+        <p class="bento-text">Calculate your BMI, metabolic rate, and get AI health insights.</p>
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80&fit=crop"
+             alt="BMI" class="bento-img-sm" loading="lazy">
+      </a>
+
+      <!-- Feature 4 — Family -->
+      <a href="/family" class="bento-card fade-in-up" data-color="forest" style="animation-delay:.3s">
+        <div class="bento-icon-wrap">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <h3 class="bento-title">Family Profiles</h3>
+        <p class="bento-text">Manage nutrition for kids, adults, and seniors—all in one plan.</p>
+        <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&q=80&fit=crop"
+             alt="Family" class="bento-img-sm" loading="lazy">
+      </a>
+
+      <!-- Feature 5 — Calorie Analyzer (Tall) -->
+      <div class="bento-card bento-tall fade-in-up" data-color="navy" style="animation-delay:.4s">
+        <div class="bento-icon-wrap">
+          <i class="bi bi-search"></i>
+        </div>
+        <h3 class="bento-title">Calorie Analyzer</h3>
+        <p class="bento-text mb-3">Type any meal or food list and get instant nutrition breakdown with AI-powered analysis.</p>
+        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=500&q=80&fit=crop"
+             alt="Analyze" class="bento-img" loading="lazy">
+        <button class="btn ng-btn-sm mt-3" onclick="event.preventDefault();document.getElementById('quickAnalyze').scrollIntoView({behavior:'smooth'})">
+          Try it now →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Indian Food Showcase ────────────────────────────────────────────────── -->
+<section class="py-6 ng-section-alt">
+  <div class="container">
+    <div class="section-header text-center mb-5 fade-in-up">
+      <h2 class="section-title">Deep Indian Cuisine Knowledge</h2>
+      <p class="section-subtitle">From North Indian curries to South Indian dosas — we know it all</p>
+    </div>
+
     <div class="row g-4">
-
-      <div class="col-md-6 col-lg-4">
-        <a href="/chat" class="text-decoration-none">
-          <div class="feature-card h-100 animate__animated animate__fadeInUp">
-            <div class="feature-icon-wrap bg-gradient-green">
-              <i class="bi bi-chat-dots-fill"></i>
-            </div>
-            <h5 class="mt-3 mb-2">AI Nutrition Chat</h5>
-            <p class="text-muted small">Ask anything — calorie counts, healthy swaps, recipe ideas, diet advice. Real-time AI responses.</p>
-            <span class="feature-tag">Chat Now →</span>
+      <div class="col-md-3 col-6 fade-in-up">
+        <div class="food-card">
+          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=85&fit=crop" alt="Dosa" loading="lazy">
+          <div class="food-overlay">
+            <p class="food-name">South Indian</p>
           </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-lg-4">
-        <a href="/meal-plan" class="text-decoration-none">
-          <div class="feature-card h-100 animate__animated animate__fadeInUp" style="animation-delay:.1s">
-            <div class="feature-icon-wrap bg-gradient-orange">
-              <i class="bi bi-calendar3"></i>
-            </div>
-            <h5 class="mt-3 mb-2">Smart Meal Planning</h5>
-            <p class="text-muted small">Generate personalised 7-day Indian meal plans with calories, macros, and prep tips.</p>
-            <span class="feature-tag">Plan Meals →</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-lg-4">
-        <a href="/bmi" class="text-decoration-none">
-          <div class="feature-card h-100 animate__animated animate__fadeInUp" style="animation-delay:.2s">
-            <div class="feature-icon-wrap bg-gradient-blue">
-              <i class="bi bi-activity"></i>
-            </div>
-            <h5 class="mt-3 mb-2">BMI & TDEE Calculator</h5>
-            <p class="text-muted small">Calculate BMI, metabolic rate, daily calorie needs, and get an AI-powered health analysis.</p>
-            <span class="feature-tag">Calculate →</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-lg-4">
-        <a href="/family" class="text-decoration-none">
-          <div class="feature-card h-100 animate__animated animate__fadeInUp" style="animation-delay:.3s">
-            <div class="feature-icon-wrap bg-gradient-purple">
-              <i class="bi bi-people-fill"></i>
-            </div>
-            <h5 class="mt-3 mb-2">Family Diet Profiles</h5>
-            <p class="text-muted small">Manage nutrition for your whole family — kids, adults, seniors — with one unified meal plan.</p>
-            <span class="feature-tag">Manage Family →</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card h-100 animate__animated animate__fadeInUp" style="animation-delay:.4s">
-          <div class="feature-icon-wrap bg-gradient-red">
-            <i class="bi bi-search"></i>
-          </div>
-          <h5 class="mt-3 mb-2">Calorie Analyser</h5>
-          <p class="text-muted small">Type any meal or food list and instantly get calories, macros, and healthier alternatives.</p>
-          <button class="feature-tag border-0 bg-transparent p-0" onclick="document.getElementById('calorieSection').scrollIntoView({behavior:'smooth'})">
-            Analyse Food →
-          </button>
         </div>
       </div>
-
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card h-100 animate__animated animate__fadeInUp" style="animation-delay:.5s">
-          <div class="feature-icon-wrap bg-gradient-teal">
-            <i class="bi bi-lightbulb-fill"></i>
+      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.1s">
+        <div class="food-card">
+          <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=85&fit=crop" alt="Thali" loading="lazy">
+          <div class="food-overlay">
+            <p class="food-name">North Indian</p>
           </div>
-          <h5 class="mt-3 mb-2">Daily Nutrition Tips</h5>
-          <p class="text-muted small">AI-generated daily tips tailored to Indian dietary habits, seasons, and lifestyle goals.</p>
-          <button class="feature-tag border-0 bg-transparent p-0" onclick="loadDailyTip()">Get Today's Tip →</button>
         </div>
       </div>
-
+      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.2s">
+        <div class="food-card">
+          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=85&fit=crop" alt="Street Food" loading="lazy">
+          <div class="food-overlay">
+            <p class="food-name">Street Food</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.3s">
+        <div class="food-card">
+          <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&q=85&fit=crop" alt="Sweets" loading="lazy">
+          <div class="food-overlay">
+            <p class="food-name">Festival Foods</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── Quick Calorie Analyser ─────────────────────────────────────────────── -->
-<section class="py-5 bg-section" id="calorieSection">
+<!-- ── Quick Calorie Analyzer ──────────────────────────────────────────────── -->
+<section class="py-6" id="quickAnalyze">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <h2 class="section-title text-center mb-2">Quick Calorie Analyser</h2>
-        <p class="text-center text-muted mb-4">Type your meal and get instant AI nutrition analysis</p>
-        <div class="glass-card p-4">
+      <div class="col-lg-8 fade-in-up">
+        <div class="ng-card-premium p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <h2 class="card-title-lg mb-2">Quick Calorie Analyzer</h2>
+            <p class="card-subtitle">Type your meal and get instant AI nutrition analysis</p>
+          </div>
+          
           <div class="mb-3">
-            <textarea class="form-control custom-input" id="calorieInput" rows="3"
-              placeholder="e.g. 2 rotis, 1 bowl dal makhani, 1 cup basmati rice, raita..."></textarea>
+            <textarea class="ng-input-lg" id="calorieInput" rows="3"
+              placeholder="e.g. 2 rotis, 1 bowl dal makhani, 1 cup rice, raita..."></textarea>
           </div>
-          <button class="btn btn-primary w-100" id="analyseBtn" onclick="analyseCalories()">
-            <i class="bi bi-search me-2"></i>Analyse Nutrition
+          
+          <button class="btn ng-btn-primary w-100 ng-btn-lg" id="analyseBtn" onclick="analyseCalories()">
+            <i class="bi bi-search me-2"></i>Analyze Nutrition
           </button>
-          <div id="calorieResult" class="mt-4 result-box d-none"></div>
+          
+          <div id="calorieResult" class="result-card mt-4 d-none"></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Daily Tip Section ──────────────────────────────────────────────────── -->
-<section class="py-5">
+<!-- ── Daily Tip ───────────────────────────────────────────────────────────── -->
+<section class="py-6 ng-section-alt">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-7 text-center">
+      <div class="col-lg-7 text-center fade-in-up">
         <h2 class="section-title mb-4">Today's Nutrition Tip</h2>
-        <div class="tip-card glass-card p-4" id="tipCard">
+        
+        <div class="ng-card-premium p-4" id="tipCard">
           <div class="tip-loading">
-            <div class="spinner-border text-success" role="status"></div>
-            <p class="mt-2 text-muted">Loading tip...</p>
+            <div class="spinner-border text-success mb-2"></div>
+            <p class="text-muted">Loading tip...</p>
           </div>
           <div class="tip-content d-none" id="tipContent"></div>
         </div>
-        <button class="btn btn-outline-success mt-3" onclick="loadDailyTip()">
-          <i class="bi bi-arrow-clockwise me-2"></i>New Tip
+        
+        <button class="btn ng-btn-outline mt-3" onclick="loadDailyTip()">
+          <i class="bi bi-arrow-clockwise me-2"></i>Get Another Tip
         </button>
       </div>
     </div>
@@ -223,24 +262,38 @@
 
 {% block scripts %}
 <script>
-// Load daily tip on page load
-window.addEventListener('DOMContentLoaded', () => {
+// Page load animation
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('pageLoader').classList.add('loaded');
+  }, 500);
   loadDailyTip();
-  animateCounters();
 });
 
-function animateCounters() {
-  document.querySelectorAll('.stat-num[data-target]').forEach(el => {
-    const target = +el.dataset.target;
-    const step   = target / 60;
-    let current  = 0;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) { el.textContent = target.toLocaleString(); clearInterval(timer); }
-      else el.textContent = Math.floor(current).toLocaleString();
-    }, 25);
+// Intersection Observer for scroll animations
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      observer.unobserve(entry.target);
+    }
   });
-}
+}, observerOptions);
+
+document.querySelectorAll('.fade-in-up, .fade-in-right').forEach(el => observer.observe(el));
+
+// Parallax hero images
+document.addEventListener('mousemove', (e) => {
+  const imgs = document.querySelectorAll('.hero-img');
+  const x = e.clientX / window.innerWidth;
+  const y = e.clientY / window.innerHeight;
+  
+  imgs.forEach((img, i) => {
+    const speed = (i + 1) * 5;
+    img.style.transform = `translate(${x * speed}px, ${y * speed}px) scale(${1 + i * 0.02})`;
+  });
+});
 
 function loadDailyTip() {
   const card = document.getElementById('tipCard');
@@ -252,12 +305,12 @@ function loadDailyTip() {
   fetch('/api/quick-tip')
     .then(r => r.json())
     .then(data => {
-      content.innerHTML = marked.parse(data.tip || 'No tip available.');
+      content.innerHTML = marked.parse(data.tip || 'Stay hydrated and eat colorful foods! 🌈');
       loading.classList.add('d-none');
       content.classList.remove('d-none');
     })
     .catch(() => {
-      content.innerHTML = '💡 Eat a rainbow of vegetables every day for optimal micronutrient intake!';
+      content.innerHTML = '💡 Eat a variety of colorful vegetables for optimal nutrition!';
       loading.classList.add('d-none');
       content.classList.remove('d-none');
     });
@@ -270,7 +323,7 @@ function analyseCalories() {
   if (!input) { showToast('Please enter some food items first.', 'warning'); return; }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analysing...';
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
   result.classList.add('d-none');
 
   fetch('/api/calorie-analysis', {
@@ -283,10 +336,10 @@ function analyseCalories() {
     result.innerHTML = marked.parse(data.analysis || 'No analysis available.');
     result.classList.remove('d-none');
   })
-  .catch(() => showToast('Error analysing food. Please try again.', 'danger'))
+  .catch(() => showToast('Error analyzing food. Please try again.', 'danger'))
   .finally(() => {
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-search me-2"></i>Analyse Nutrition';
+    btn.innerHTML = '<i class="bi bi-search me-2"></i>Analyze Nutrition';
   });
 }
 </script>

@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    NutriGuru — Main JavaScript
-   Global utilities: theme toggle, toasts, scroll effects
    ═══════════════════════════════════════════════════════════════════════════ */
 
 // ── Theme Management ──────────────────────────────────────────────────────────
@@ -15,7 +14,6 @@ function applyTheme(theme) {
   const icon = document.getElementById('themeIcon');
   if (icon) {
     icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
-    icon.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
   }
 }
 
@@ -24,6 +22,9 @@ function toggleTheme() {
   const next = current === 'dark' ? 'light' : 'dark';
   localStorage.setItem(THEME_KEY, next);
   applyTheme(next);
+  
+  // Subtle transition effect
+  document.body.style.transition = 'background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s';
 }
 
 // ── Toast Notifications ───────────────────────────────────────────────────────
@@ -38,12 +39,12 @@ function showToast(message, type = 'info', duration = 4000) {
   toastEl.id = id;
   toastEl.className = `toast align-items-center text-bg-${type} border-0 show animate__animated animate__fadeInRight`;
   toastEl.setAttribute('role', 'alert');
-  toastEl.style.cssText = 'max-width: 360px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.25);';
+  toastEl.style.cssText = 'max-width: 360px; border-radius: 14px;';
   toastEl.innerHTML = `
     <div class="d-flex">
       <div class="toast-body d-flex align-items-center gap-2">
-        <span>${icons[type] || '💬'}</span>
-        <span>${message}</span>
+        <span style="font-size:1.1rem">${icons[type] || '💬'}</span>
+        <span style="font-family:Plus Jakarta Sans,sans-serif;font-weight:600">${message}</span>
       </div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto"
         onclick="document.getElementById('${id}').remove()"></button>
@@ -59,15 +60,30 @@ function initNavbarScroll() {
   const nav = document.getElementById('mainNav');
   if (!nav) return;
 
+  let lastScroll = 0;
   let ticking = false;
+
   window.addEventListener('scroll', () => {
     if (!ticking) {
       requestAnimationFrame(() => {
-        if (window.scrollY > 50) {
-          nav.style.background = 'rgba(15, 23, 42, 0.95)';
+        const currentScroll = window.scrollY;
+        
+        if (currentScroll > 100) {
+          nav.style.background = 'rgba(10, 14, 18, 0.95)';
+          nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.2)';
         } else {
-          nav.style.background = '';
+          nav.style.background = 'rgba(10, 14, 18, 0.85)';
+          nav.style.boxShadow = 'none';
         }
+        
+        // Hide/show on scroll
+        if (currentScroll > lastScroll && currentScroll > 300) {
+          nav.style.transform = 'translateY(-100%)';
+        } else {
+          nav.style.transform = 'translateY(0)';
+        }
+        
+        lastScroll = currentScroll;
         ticking = false;
       });
       ticking = true;
@@ -75,28 +91,52 @@ function initNavbarScroll() {
   });
 }
 
-// ── Intersection Observer Animations ─────────────────────────────────────────
+// ── Intersection Observer for Scroll Animations ──────────────────────────────
 function initScrollAnimations() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+        entry.target.classList.add('in-view');
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, observerOptions);
 
-  document.querySelectorAll('.feature-card, .stat-card, .glass-card, .member-card')
+  document.querySelectorAll('.fade-in-up, .fade-in-right, .bento-card, .food-card, .stat-mini')
     .forEach(el => observer.observe(el));
+}
+
+// ── Smooth Scroll for Anchor Links ───────────────────────────────────────────
+function initSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
 }
 
 // ── Copy to Clipboard Helper ──────────────────────────────────────────────────
 function copyToClipboard(text, label = 'Content') {
   if (navigator.clipboard && window.isSecureContext) {
     return navigator.clipboard.writeText(text)
-      .then(() => showToast(`${label} copied to clipboard! 📋`, 'success'));
+      .then(() => showToast(`${label} copied! 📋`, 'success'));
   } else {
-    // Fallback for non-HTTPS
+    // Fallback
     const el = document.createElement('textarea');
     el.value = text;
     el.setAttribute('readonly', '');
@@ -110,70 +150,95 @@ function copyToClipboard(text, label = 'Content') {
   }
 }
 
-// ── Active Nav Link ───────────────────────────────────────────────────────────
-function setActiveNavLink() {
-  const path = window.location.pathname;
-  document.querySelectorAll('.nav-pill').forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === path) {
-      link.classList.add('active');
-    }
-  });
-}
-
-// ── Smooth Scroll ─────────────────────────────────────────────────────────────
-function smoothScrollTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ── Format markdown in AI responses ──────────────────────────────────────────
-function renderMarkdown(elementId) {
-  const el = document.getElementById(elementId);
-  if (el && typeof marked !== 'undefined') {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-    });
-    el.innerHTML = marked.parse(el.textContent || '');
-  }
-}
-
-// ── Debounce utility ──────────────────────────────────────────────────────────
+// ── Debounce Utility ──────────────────────────────────────────────────────────
 function debounce(fn, wait) {
   let timer;
-  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), wait); };
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
 }
 
-// ── Init on DOM ready ─────────────────────────────────────────────────────────
+// ── Page Load Animation ───────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  // Hide loader
+  setTimeout(() => {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('loaded');
+  }, 300);
+});
+
+// ── Initialize on DOM Ready ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Apply saved theme
   applyTheme(getTheme());
 
-  // Theme toggle button
+  // Theme toggle
   const toggle = document.getElementById('themeToggle');
   if (toggle) toggle.addEventListener('click', toggleTheme);
 
-  // Navbar scroll behaviour
+  // Navbar effects
   initNavbarScroll();
 
-  // Scroll-triggered animations
+  // Scroll animations
   initScrollAnimations();
 
-  // Active nav link highlighting
-  setActiveNavLink();
+  // Smooth scroll
+  initSmoothScroll();
 
-  // Configure marked.js
+  // Configure marked.js for markdown parsing
   if (typeof marked !== 'undefined') {
-    marked.setOptions({ breaks: true, gfm: true });
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: false,
+      mangle: false
+    });
   }
 
-  // Add keyboard shortcut: Ctrl+/ to focus chat input
+  // Keyboard shortcut: Ctrl+/ to focus chat input
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === '/') {
       e.preventDefault();
       const chatInput = document.getElementById('chatInput');
-      if (chatInput) { chatInput.focus(); chatInput.select(); }
+      if (chatInput) {
+        chatInput.focus();
+        chatInput.select();
+      }
     }
   });
+
+  // Add transition to body after load
+  setTimeout(() => {
+    document.body.style.transition = 'background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s';
+  }, 500);
 });
+
+// ── Parallax Effect on Hero Images (if on homepage) ───────────────────────────
+if (window.location.pathname === '/') {
+  let mouseMoveHandler = null;
+  
+  window.addEventListener('load', () => {
+    const imgs = document.querySelectorAll('.hero-img');
+    if (imgs.length === 0) return;
+
+    mouseMoveHandler = debounce((e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      
+      imgs.forEach((img, i) => {
+        const speed = (i + 1) * 8;
+        const translateX = x * speed;
+        const translateY = y * speed;
+        const scale = 1 + (i * 0.015);
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      });
+    }, 10);
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+  });
+}
+
+// ── Export for use in templates ───────────────────────────────────────────────
+window.showToast = showToast;
+window.copyToClipboard = copyToClipboard;
