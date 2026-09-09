@@ -12,7 +12,14 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "nutriguru-secret-2024")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutriguru.db'
+
+# Use DATABASE_URL from environment for production (Neon/Supabase), fallback to local SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///nutriguru.db")
+
+# Fix for Vercel Serverless environment (PostgreSQL compatibility)
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
 
