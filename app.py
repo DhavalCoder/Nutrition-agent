@@ -11,7 +11,12 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "nutriguru-secret-2024")
 CORS(app)
 
-# ── Groq / Ollama Client Setup ────────────────────────────────────────────────
+# ── Constants ─────────────────────────────────────────────────────────────────
+MAX_MESSAGE_LENGTH = 2000   # prevent token explosion / abuse
+MAX_FOOD_INPUT_LENGTH = 1000
+
+
+# ── Groq Client ───────────────────────────────────────────────────────────────
 def get_client():
     """Return a Groq client, or None if not configured."""
     api_key = os.getenv("GROQ_API_KEY", "")
@@ -21,28 +26,21 @@ def get_client():
 
 
 def ask_ai(user_message: str, history: list, context: str = "") -> str:
-    """
-    Send a message to Groq (or Ollama) and return the response text.
-    Falls back to demo mode if no API key is configured.
-    """
+    """Send a message to Groq (or Ollama) and return the response text."""
     cfg = AGENT_CONFIG["model_settings"]
 
-    # ── Build messages list ───────────────────────────────────────────────────
     system_prompt = build_system_prompt(context)
     messages = [{"role": "system", "content": system_prompt}]
 
-    # Add last 6 turns of conversation history
     for turn in history[-6:]:
         messages.append({"role": "user",      "content": turn["user"]})
         messages.append({"role": "assistant", "content": turn["assistant"]})
 
     messages.append({"role": "user", "content": user_message})
 
-    # ── Ollama (local, no API key needed) ─────────────────────────────────────
     if cfg.get("use_ollama"):
         return ask_ollama(messages, cfg)
 
-    # ── Groq API ──────────────────────────────────────────────────────────────
     client = get_client()
     if client is None:
         return demo_response()
@@ -109,7 +107,7 @@ def demo_response() -> str:
     )
 
 
-# ── Build System Prompt from AGENT_CONFIG ─────────────────────────────────────
+# ── Build System Prompt ───────────────────────────────────────────────────────
 def build_system_prompt(extra_context: str = "") -> str:
     cfg  = AGENT_CONFIG
     spec = cfg["specializations"]
@@ -157,6 +155,15 @@ def build_system_prompt(extra_context: str = "") -> str:
     return prompt
 
 
+# ── Helper: safe JSON parse ────────────────────────────────────────────────────
+def get_json_or_400():
+    """Return parsed JSON or a 400 response tuple."""
+    data = request.get_json(silent=True)
+    if data is None:
+        return None, (jsonify({"error": "Request body must be valid JSON"}), 400)
+    return data, None
+
+
 # ── Page Routes ───────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
@@ -182,15 +189,21 @@ def family():
 # ── API: Chat ─────────────────────────────────────────────────────────────────
 @app.route("/api/chat", methods=["POST"])
 def api_chat():
-    data    = request.get_json()
+    data, err = get_json_or_400()
+    if err:
+        return err
+
     message = (data.get("message") or "").strip()
     if not message:
         return jsonify({"error": "Empty message"}), 400
 
+    # FIX: cap message length to prevent token explosion
+    if len(message) > MAX_MESSAGE_LENGTH:
+        message = message[:MAX_MESSAGE_LENGTH]
+
     if "chat_history" not in session:
         session["chat_history"] = []
 
-    # Build user context from active profile
     context = ""
     if session.get("active_profile"):
         p = session["active_profile"]
@@ -212,17 +225,24 @@ def api_chat():
 # ── API: Generate Meal Plan ───────────────────────────────────────────────────
 @app.route("/api/meal-plan", methods=["POST"])
 def api_meal_plan():
-    data = request.get_json()
-    days       = int(data.get("days", 7))
-    calories   = int(data.get("calories", 2000))
-    diet_type  = data.get("diet_type", "balanced")
-    allergies  = data.get("allergies", "none")
-    goal       = data.get("goal", "maintain weight")
-    cuisine    = data.get("cuisine", "Indian")
-    conditions = data.get("conditions", "none")
-    budget     = data.get("budget", "moderate")
+    data, err = get_json_or_400()
+    if err:
+        return err
 
-    # Enforce safety minimum
+    # FIX: safe int/float conversion with fallbacks
+    try:
+        days     = max(1, min(int(data.get("days", 7)), 7))
+        calories = int(data.get("calories", 2000))
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid numeric value for days or calories"}), 400
+
+    diet_type  = str(data.get("diet_type", "balanced"))[:50]
+    allergies  = str(data.get("allergies", "none"))[:200]
+    goal       = str(data.get("goal", "maintain weight"))[:100]
+    cuisine    = str(data.get("cuisine", "Indian"))[:50]
+    conditions = str(data.get("conditions", "none"))[:200]
+    budget     = str(data.get("budget", "moderate"))[:50]
+
     safe = AGENT_CONFIG["safety_rules"]
     calories = max(calories, safe["adult_min_calories"])
 
@@ -254,14 +274,32 @@ Use emojis throughout. Be specific with quantities (e.g., "1 cup cooked dal").
 # ── API: BMI + TDEE Analysis ──────────────────────────────────────────────────
 @app.route("/api/bmi", methods=["POST"])
 def api_bmi():
-    data     = request.get_json()
-    weight   = float(data.get("weight", 70))
-    height   = float(data.get("height", 170))
-    age      = int(data.get("age", 30))
-    gender   = data.get("gender", "male").lower()
-    activity = data.get("activity_level", "moderate")
+    data, err = get_json_or_400()
+    if err:
+        return err
 
-    # Calculate BMI
+    # FIX: validate numeric inputs before computation
+    try:
+        weight = float(data.get("weight", 70))
+        height = float(data.get("height", 170))
+        age    = int(data.get("age", 30))
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid numeric value for weight, height, or age"}), 400
+
+    # FIX: guard against division by zero (height=0) and nonsensical inputs
+    if height <= 0 or weight <= 0:
+        return jsonify({"error": "Height and weight must be positive numbers"}), 400
+    if not (5 <= age <= 120):
+        return jsonify({"error": "Age must be between 5 and 120"}), 400
+    if not (20 <= weight <= 500):
+        return jsonify({"error": "Weight must be between 20 and 500 kg"}), 400
+    if not (50 <= height <= 280):
+        return jsonify({"error": "Height must be between 50 and 280 cm"}), 400
+
+    gender   = str(data.get("gender", "male")).lower().strip()
+    activity = str(data.get("activity_level", "moderate")).lower().strip()
+
+    # Deterministic Python calculation (not delegated to LLM)
     bmi_val = round(weight / ((height / 100) ** 2), 1)
     if bmi_val < 18.5:
         category = "Underweight"
@@ -272,11 +310,12 @@ def api_bmi():
     else:
         category = "Obese"
 
-    # BMR — Mifflin-St Jeor equation
-    if gender == "male":
-        bmr = 10 * weight + 6.25 * height - 5 * age + 5
-    else:
+    # Mifflin-St Jeor BMR
+    if gender == "female":
         bmr = 10 * weight + 6.25 * height - 5 * age - 161
+    else:
+        # Default to male formula for 'male' and any other value
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5
 
     activity_factors = {
         "sedentary":   1.2,
@@ -318,10 +357,16 @@ Be encouraging, specific, and actionable. Use emojis throughout.
 # ── API: Calorie Analysis ─────────────────────────────────────────────────────
 @app.route("/api/calorie-analysis", methods=["POST"])
 def api_calorie_analysis():
-    data  = request.get_json()
+    data, err = get_json_or_400()
+    if err:
+        return err
+
     foods = (data.get("foods") or "").strip()
     if not foods:
         return jsonify({"error": "No food items provided"}), 400
+
+    # FIX: cap input length
+    foods = foods[:MAX_FOOD_INPUT_LENGTH]
 
     prompt = f"""
 Analyse the nutritional content of this meal / food list:
@@ -345,17 +390,39 @@ Format as a clear, well-structured nutritional report with emojis.
 # ── API: Family Diet Plan ─────────────────────────────────────────────────────
 @app.route("/api/family-plan", methods=["POST"])
 def api_family_plan():
-    data    = request.get_json()
+    data, err = get_json_or_400()
+    if err:
+        return err
+
     members = data.get("members", [])
     if not members:
         return jsonify({"error": "No family members provided"}), 400
+    if len(members) > 10:
+        return jsonify({"error": "Maximum 10 family members allowed"}), 400
+
+    # FIX: validate each member has required fields, use .get() safely
+    valid_members = []
+    for i, m in enumerate(members):
+        if not isinstance(m, dict):
+            return jsonify({"error": f"Member {i+1} is not a valid object"}), 400
+        name = str(m.get("name", f"Member {i+1}")).strip()[:50]
+        try:
+            age = int(m.get("age", 30))
+        except (ValueError, TypeError):
+            age = 30
+        valid_members.append({
+            "name":       name,
+            "age":        max(1, min(age, 120)),
+            "gender":     str(m.get("gender", "unknown"))[:10],
+            "goal":       str(m.get("goal", "healthy eating"))[:100],
+            "conditions": str(m.get("conditions", "none"))[:200],
+            "allergies":  str(m.get("allergies", "none"))[:200],
+        })
 
     members_desc = "\n".join([
         f"- {m['name']} ({m['age']} yr old {m['gender']}): "
-        f"Goal={m.get('goal', 'healthy eating')}, "
-        f"Conditions={m.get('conditions', 'none')}, "
-        f"Allergies={m.get('allergies', 'none')}"
-        for m in members
+        f"Goal={m['goal']}, Conditions={m['conditions']}, Allergies={m['allergies']}"
+        for m in valid_members
     ])
 
     prompt = f"""
@@ -380,7 +447,8 @@ Be warm, practical, and family-friendly. Use emojis.
 # ── API: Set Active User Profile ──────────────────────────────────────────────
 @app.route("/api/set-profile", methods=["POST"])
 def set_profile():
-    data = request.get_json()
+    # FIX: accept both JSON and form data gracefully
+    data = request.get_json(silent=True) or {}
     session["active_profile"] = data
     session.modified = True
     return jsonify({"status": "Profile saved successfully"})
