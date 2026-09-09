@@ -112,11 +112,10 @@ AGENT_CONFIG = {
     # ----------------------------------------------------------
     "model_settings": {
         # ── Groq models (fast, free) ──────────────────────────
-        # "llama3-70b-8192"           ← Best quality (recommended)
-        # "llama3-8b-8192"            ← Fastest response
-        # "mixtral-8x7b-32768"        ← Good for long outputs
-        # "gemma2-9b-it"              ← Google Gemma 2
-        "model_id":        "llama3-70b-8192",
+        # "openai/gpt-oss-120b"       ← High intelligence (recommended)
+        # "groq/compound"             ← Groq Native Model
+        # "qwen/qwen3.8-27b"          ← Fast Qwen 3.8
+        "model_id":        "openai/gpt-oss-120b",
         "max_tokens":      1024,
         "temperature":     0.7,
         "top_p":           0.9,
