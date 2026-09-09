@@ -1,259 +1,186 @@
 {% extends "base.html" %}
-{% block title %}NutriGuru — AI Nutrition Intelligence{% endblock %}
+{% block title %}NutriGuru — Nutrition as Digital Art{% endblock %}
 
 {% block content %}
 
-<!-- ── Hero Section with Video Background ────────────────────────────────── -->
-<section class="ng-hero" id="hero">
-  <!-- Video Background -->
-  <div class="hero-video-wrap">
-    <video autoplay muted loop playsinline class="hero-video">
-      <source src="https://cdn.coverr.co/videos/coverr-fresh-vegetables-rotating-5279/1080p.mp4" type="video/mp4">
-    </video>
-    <div class="hero-overlay"></div>
-  </div>
-
-  <div class="container position-relative" style="z-index:10">
-    <div class="row align-items-center min-vh-100 py-5">
-      <div class="col-lg-7 mb-5 mb-lg-0">
-        
-        <!-- Badge -->
-        <div class="hero-badge fade-in-up">
-          ✨ Powered by Groq AI · 🇮🇳 Indian Food Expert
-        </div>
-
-        <!-- Main Heading -->
-        <h1 class="hero-heading fade-in-up" style="animation-delay:.1s">
-          Your Personal<br>
-          <span class="text-gradient">Nutrition Intelligence</span>
-        </h1>
-
-        <!-- Subheading -->
-        <p class="hero-subtext fade-in-up" style="animation-delay:.2s">
-          AI-powered meal planning, real-time calorie analysis, family diet management<br class="d-none d-md-block">
-          and smart nutrition coaching — all with deep Indian cuisine expertise.
-        </p>
-
-        <!-- CTA Buttons -->
-        <div class="d-flex gap-3 flex-wrap fade-in-up" style="animation-delay:.3s">
-          <a href="/chat" class="btn ng-btn-primary ng-btn-lg">
-            <i class="bi bi-chat-dots-fill me-2"></i>Chat with NutriGuru
-          </a>
-          <a href="/meal-plan" class="btn ng-btn-outline ng-btn-lg">
-            <i class="bi bi-calendar3 me-2"></i>Generate Meal Plan
-          </a>
-        </div>
-
-        <!-- Stats Row -->
-        <div class="row g-3 mt-4 fade-in-up" style="animation-delay:.4s">
-          <div class="col-4">
-            <div class="stat-mini">
-              <div class="stat-mini-num">500+</div>
-              <div class="stat-mini-label">Recipes</div>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="stat-mini">
-              <div class="stat-mini-num">10K+</div>
-              <div class="stat-mini-label">Users</div>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="stat-mini">
-              <div class="stat-mini-num">98%</div>
-              <div class="stat-mini-label">Satisfaction</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Hero Image -->
-      <div class="col-lg-5 fade-in-right">
-        <div class="hero-image-stack">
-          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=90&fit=crop"
-               alt="Healthy Food" class="hero-img hero-img-1" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=90&fit=crop"
-               alt="Salad Bowl" class="hero-img hero-img-2" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=90&fit=crop"
-               alt="Nutrition" class="hero-img hero-img-3" loading="lazy">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scroll Indicator -->
-  <div class="scroll-indicator">
-    <div class="scroll-mouse">
-      <div class="scroll-wheel"></div>
-    </div>
-    <p class="scroll-text">Scroll to explore</p>
-  </div>
-</section>
-
-<!-- ── Features Bento Grid ─────────────────────────────────────────────────── -->
-<section class="py-6">
-  <div class="container">
-    <div class="section-header text-center mb-5 fade-in-up">
-      <h2 class="section-title">Everything You Need</h2>
-      <p class="section-subtitle">Comprehensive nutrition tools powered by AI</p>
-    </div>
-
-    <div class="bento-grid">
+<!-- ── Hero Section (Editorial Art Direction) ────────────────────────────── -->
+<section class="hero-artistic section-padding">
+  <div class="container-editorial w-100">
+    <div class="grid-12">
       
-      <!-- Feature 1 — AI Chat (Large) -->
-      <a href="/chat" class="bento-card bento-large fade-in-up" data-color="coral">
-        <div class="bento-icon-wrap">
-          <i class="bi bi-chat-dots-fill"></i>
+      <!-- Typography & CTA -->
+      <div class="hero-content">
+        <span class="eyebrow reveal">The Intelligence Era</span>
+        <div class="reveal-mask">
+          <h1 class="hero-heading">
+            NUTRITION <br>
+            <i style="color: var(--t-muted);">as digital</i> <br>
+            ART.
+          </h1>
         </div>
-        <h3 class="bento-title">AI Nutrition Chat</h3>
-        <p class="bento-text">Ask anything about food, calories, healthy swaps, or meal ideas. Get instant AI-powered responses tailored to Indian cuisine.</p>
-        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80&fit=crop" 
-             alt="Chat" class="bento-img" loading="lazy">
-      </a>
-
-      <!-- Feature 2 — Meal Plan -->
-      <a href="/meal-plan" class="bento-card fade-in-up" data-color="mint" style="animation-delay:.1s">
-        <div class="bento-icon-wrap">
-          <i class="bi bi-calendar-week"></i>
+        <p class="subheading mt-4 reveal delay-2">
+          An intelligent, AI-powered ecosystem designed to decode your biology, orchestrate your meals, and elevate your relationship with food. Powered by cutting-edge language models and deep culinary knowledge.
+        </p>
+        <div class="mt-5 d-flex gap-4 align-items-center flex-wrap reveal delay-3">
+          <a href="/chat" class="btn-editorial">
+            Awaken the Agent
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="/meal-plan" class="btn-editorial-outline">
+            Craft a Plan
+          </a>
         </div>
-        <h3 class="bento-title">Meal Planner</h3>
-        <p class="bento-text">7-day personalized Indian meal plans with calories and macros.</p>
-        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&fit=crop" 
-             alt="Meal Plan" class="bento-img-sm" loading="lazy">
-      </a>
-
-      <!-- Feature 3 — BMI Calculator -->
-      <a href="/bmi" class="bento-card fade-in-up" data-color="yellow" style="animation-delay:.2s">
-        <div class="bento-icon-wrap">
-          <i class="bi bi-activity"></i>
-        </div>
-        <h3 class="bento-title">BMI & TDEE</h3>
-        <p class="bento-text">Calculate your BMI, metabolic rate, and get AI health insights.</p>
-        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80&fit=crop"
-             alt="BMI" class="bento-img-sm" loading="lazy">
-      </a>
-
-      <!-- Feature 4 — Family -->
-      <a href="/family" class="bento-card fade-in-up" data-color="forest" style="animation-delay:.3s">
-        <div class="bento-icon-wrap">
-          <i class="bi bi-people-fill"></i>
-        </div>
-        <h3 class="bento-title">Family Profiles</h3>
-        <p class="bento-text">Manage nutrition for kids, adults, and seniors—all in one plan.</p>
-        <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&q=80&fit=crop"
-             alt="Family" class="bento-img-sm" loading="lazy">
-      </a>
-
-      <!-- Feature 5 — Calorie Analyzer (Tall) -->
-      <div class="bento-card bento-tall fade-in-up" data-color="navy" style="animation-delay:.4s">
-        <div class="bento-icon-wrap">
-          <i class="bi bi-search"></i>
-        </div>
-        <h3 class="bento-title">Calorie Analyzer</h3>
-        <p class="bento-text mb-3">Type any meal or food list and get instant nutrition breakdown with AI-powered analysis.</p>
-        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=500&q=80&fit=crop"
-             alt="Analyze" class="bento-img" loading="lazy">
-        <button class="btn ng-btn-sm mt-3" onclick="event.preventDefault();document.getElementById('quickAnalyze').scrollIntoView({behavior:'smooth'})">
-          Try it now →
-        </button>
       </div>
+
+      <!-- Visual Composition -->
+      <div class="hero-visual reveal delay-4">
+        <div class="hero-image-mask">
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1600&q=90&fit=crop" 
+               alt="Artistic healthy food composition" loading="lazy">
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="float-elem float-elem-1">
+          <div style="font-size: 2rem; color: var(--t-display);">🌿</div>
+          <div>
+            <div style="font-family:'Space Grotesk', sans-serif; font-size:1.4rem; color: var(--t-display);">500+</div>
+            <div class="editorial-label">Curated Recipes</div>
+          </div>
+        </div>
+        
+        <div class="float-elem float-elem-2">
+          <div style="font-size: 2rem; color: var(--t-display);">✨</div>
+          <div>
+            <div style="font-family:'Space Grotesk', sans-serif; font-size:1.4rem; color: var(--t-display);">Groq</div>
+            <div class="editorial-label">Neural Engine</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ── The Architecture of Diet (Capabilities) ───────────────────────────── -->
+<section class="section-padding" style="background: var(--bg-surface-3);">
+  <div class="container-editorial">
+    
+    <div class="grid-12 align-items-end mb-5 pb-4">
+      <div style="grid-column: 1 / 8;">
+        <span class="eyebrow reveal">Core Capabilities</span>
+        <div class="reveal-mask">
+          <h2 class="section-title mb-0">
+            The Architecture <br>
+            <i style="color: var(--t-muted);">of your diet.</i>
+          </h2>
+        </div>
+      </div>
+      <div style="grid-column: 8 / 13;" class="reveal delay-2">
+        <p class="subheading mb-0">We transformed the traditional dashboard into a canvas of intelligent modules. Every tool is designed to provide clarity through beautiful data.</p>
+      </div>
+    </div>
+
+    <div class="grid-12">
+      
+      <!-- Module 1: AI Chat -->
+      <a href="/chat" class="art-card reveal" style="grid-column: 1 / 7; text-decoration: none; color: inherit; display: block;">
+        <div class="art-card-image">
+          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1000&q=90&fit=crop" alt="Spices">
+        </div>
+        <span class="eyebrow">Interactive Intelligence</span>
+        <h3 class="card-title-lg">Nutrition Agent</h3>
+        <p class="mt-3 text-muted" style="font-family: 'Manrope', sans-serif;">Engage in a continuous dialogue with an AI trained deeply in human biology and Indian culinary arts. Ask about ingredients, healthy swaps, or nutritional science.</p>
+        <div class="mt-4" style="color: var(--c-clay); font-weight: 600; font-family: 'Space Grotesk', sans-serif;">Engage →</div>
+      </a>
+
+      <!-- Module 2: Meal Planner -->
+      <a href="/meal-plan" class="art-card reveal delay-1" style="grid-column: 7 / 13; text-decoration: none; color: inherit; display: block; background: var(--t-display); color: var(--bg-body);">
+        <div class="art-card-image">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&q=90&fit=crop" alt="Salad">
+        </div>
+        <span class="eyebrow" style="color: var(--c-sage);">Algorithmic</span>
+        <h3 class="card-title-lg" style="color: var(--bg-body);">Smart Planner</h3>
+        <p class="mt-3" style="font-family: 'Manrope', sans-serif; opacity: 0.8;">Generate sophisticated 7-day meal plans mathematically optimized for your precise caloric needs and macro-nutrient ratios.</p>
+        <div class="data-grid border-top border-secondary mt-4 pt-4">
+          <div class="data-item">
+            <span class="data-value" style="color: var(--bg-body);">100%</span>
+            <span class="data-label" style="color: rgba(255,255,255,0.6);">Personalised</span>
+          </div>
+          <div class="data-item">
+            <span class="data-value" style="color: var(--bg-body);">Macro</span>
+            <span class="data-label" style="color: rgba(255,255,255,0.6);">Balanced</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Module 3: BMI -->
+      <a href="/bmi" class="art-card reveal delay-2 mt-4" style="grid-column: 1 / 6; text-decoration: none; color: inherit; display: block;">
+        <span class="eyebrow">Metrics</span>
+        <h3 class="card-title-lg">Biological Analysis</h3>
+        <p class="mt-3 text-muted" style="font-family: 'Manrope', sans-serif;">Calculate your Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) with clinical precision.</p>
+        <div class="mt-4" style="color: var(--c-clay); font-weight: 600; font-family: 'Space Grotesk', sans-serif;">Calculate →</div>
+      </a>
+
+      <!-- Module 4: Family Profiles -->
+      <a href="/family" class="art-card reveal delay-3 mt-4" style="grid-column: 6 / 13; text-decoration: none; color: inherit; display: block;">
+        <div class="row align-items-center h-100">
+          <div class="col-md-7">
+            <span class="eyebrow">Ecosystem</span>
+            <h3 class="card-title-lg">Family Dynamics</h3>
+            <p class="mt-3 text-muted" style="font-family: 'Manrope', sans-serif;">Synchronize the dietary requirements of an entire household into a singular, unified nutritional strategy.</p>
+            <div class="mt-4" style="color: var(--c-clay); font-weight: 600; font-family: 'Space Grotesk', sans-serif;">Manage Profiles →</div>
+          </div>
+          <div class="col-md-5 d-none d-md-block">
+            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=90&fit=crop" style="border-radius: var(--r-lg); width: 100%; object-fit: cover; aspect-ratio: 1;" alt="Family Nutrition">
+          </div>
+        </div>
+      </a>
 
     </div>
   </div>
 </section>
 
-<!-- ── Indian Food Showcase ────────────────────────────────────────────────── -->
-<section class="py-6 ng-section-alt">
-  <div class="container">
-    <div class="section-header text-center mb-5 fade-in-up">
-      <h2 class="section-title">Deep Indian Cuisine Knowledge</h2>
-      <p class="section-subtitle">From North Indian curries to South Indian dosas — we know it all</p>
-    </div>
+<!-- ── The Quick Analyzer (Interactive) ──────────────────────────────────── -->
+<section class="section-padding" id="quickAnalyze">
+  <div class="container-editorial">
+    <div class="grid-12 align-items-center">
+      
+      <div style="grid-column: 1 / 6;" class="reveal">
+        <span class="eyebrow">Real-Time Data</span>
+        <h2 class="section-title">Deconstruct <br><i>your plate.</i></h2>
+        <p class="subheading mt-4">Instantly visualize the nutritional composition of any dish. Enter your meal in natural language, and our AI will parse the ingredients and calculate the metabolic data.</p>
+        
+        <div class="mt-5" id="tipCard">
+          <h6 class="editorial-label mb-2">Today's Insight</h6>
+          <div class="tip-loading text-muted" style="font-family: 'Manrope', sans-serif;">
+            <span class="spinner-border spinner-border-sm me-2"></span>Extracting insight...
+          </div>
+          <div class="tip-content d-none" id="tipContent" style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; color: var(--t-display);"></div>
+          <button class="btn btn-link p-0 mt-3 text-decoration-none" style="color: var(--c-clay); font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 0.85rem;" onclick="loadDailyTip()">
+            ↺ Refresh Insight
+          </button>
+        </div>
+      </div>
 
-    <div class="row g-4">
-      <div class="col-md-3 col-6 fade-in-up">
-        <div class="food-card">
-          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=85&fit=crop" alt="Dosa" loading="lazy">
-          <div class="food-overlay">
-            <p class="food-name">South Indian</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.1s">
-        <div class="food-card">
-          <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=85&fit=crop" alt="Thali" loading="lazy">
-          <div class="food-overlay">
-            <p class="food-name">North Indian</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.2s">
-        <div class="food-card">
-          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=85&fit=crop" alt="Street Food" loading="lazy">
-          <div class="food-overlay">
-            <p class="food-name">Street Food</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6 fade-in-up" style="animation-delay:.3s">
-        <div class="food-card">
-          <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&q=85&fit=crop" alt="Sweets" loading="lazy">
-          <div class="food-overlay">
-            <p class="food-name">Festival Foods</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── Quick Calorie Analyzer ──────────────────────────────────────────────── -->
-<section class="py-6" id="quickAnalyze">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 fade-in-up">
-        <div class="ng-card-premium p-4 p-lg-5">
-          <div class="text-center mb-4">
-            <h2 class="card-title-lg mb-2">Quick Calorie Analyzer</h2>
-            <p class="card-subtitle">Type your meal and get instant AI nutrition analysis</p>
-          </div>
+      <div style="grid-column: 7 / 13;" class="reveal delay-2">
+        <div class="art-card" style="padding: 3rem; background: var(--bg-surface-2);">
           
-          <div class="mb-3">
-            <textarea class="ng-input-lg" id="calorieInput" rows="3"
+          <div class="mb-5">
+            <label class="editorial-label mb-2">Natural Language Input</label>
+            <textarea class="editorial-input" id="calorieInput" rows="2" 
               placeholder="e.g. 2 rotis, 1 bowl dal makhani, 1 cup rice, raita..."></textarea>
           </div>
-          
-          <button class="btn ng-btn-primary w-100 ng-btn-lg" id="analyseBtn" onclick="analyseCalories()">
-            <i class="bi bi-search me-2"></i>Analyze Nutrition
-          </button>
-          
-          <div id="calorieResult" class="result-card mt-4 d-none"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ── Daily Tip ───────────────────────────────────────────────────────────── -->
-<section class="py-6 ng-section-alt">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-7 text-center fade-in-up">
-        <h2 class="section-title mb-4">Today's Nutrition Tip</h2>
-        
-        <div class="ng-card-premium p-4" id="tipCard">
-          <div class="tip-loading">
-            <div class="spinner-border text-success mb-2"></div>
-            <p class="text-muted">Loading tip...</p>
+          <button class="btn-editorial w-100 justify-content-center" id="analyseBtn" onclick="analyseCalories()">
+            Analyze Composition
+          </button>
+
+          <!-- Result Area -->
+          <div id="calorieResult" class="mt-5 d-none pt-4 border-top" style="border-color: var(--border-med) !important; font-family: 'Manrope', sans-serif; color: var(--t-body);">
           </div>
-          <div class="tip-content d-none" id="tipContent"></div>
         </div>
-        
-        <button class="btn ng-btn-outline mt-3" onclick="loadDailyTip()">
-          <i class="bi bi-arrow-clockwise me-2"></i>Get Another Tip
-        </button>
       </div>
+
     </div>
   </div>
 </section>
@@ -262,16 +189,17 @@
 
 {% block scripts %}
 <script>
-// Page load animation
+// Preserve existing logic for index.html functionality
 window.addEventListener('load', () => {
   setTimeout(() => {
-    document.getElementById('pageLoader').classList.add('loaded');
+    const pl = document.getElementById('pageLoader');
+    if(pl) pl.classList.add('loaded');
   }, 500);
   loadDailyTip();
 });
 
-// Intersection Observer for scroll animations
-const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+// Intersection Observer for scroll animations (if not handled by main.js)
+const obsOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -279,24 +207,13 @@ const observer = new IntersectionObserver((entries) => {
       observer.unobserve(entry.target);
     }
   });
-}, observerOptions);
+}, obsOptions);
 
-document.querySelectorAll('.fade-in-up, .fade-in-right').forEach(el => observer.observe(el));
-
-// Parallax hero images
-document.addEventListener('mousemove', (e) => {
-  const imgs = document.querySelectorAll('.hero-img');
-  const x = e.clientX / window.innerWidth;
-  const y = e.clientY / window.innerHeight;
-  
-  imgs.forEach((img, i) => {
-    const speed = (i + 1) * 5;
-    img.style.transform = `translate(${x * speed}px, ${y * speed}px) scale(${1 + i * 0.02})`;
-  });
-});
+document.querySelectorAll('.reveal, .reveal-mask').forEach(el => observer.observe(el));
 
 function loadDailyTip() {
   const card = document.getElementById('tipCard');
+  if(!card) return;
   const content = document.getElementById('tipContent');
   const loading = card.querySelector('.tip-loading');
   loading.classList.remove('d-none');
@@ -305,12 +222,12 @@ function loadDailyTip() {
   fetch('/api/quick-tip')
     .then(r => r.json())
     .then(data => {
-      content.innerHTML = marked.parse(data.tip || 'Stay hydrated and eat colorful foods! 🌈');
+      content.innerHTML = marked.parse(data.tip || 'Stay hydrated and eat colorful foods.');
       loading.classList.add('d-none');
       content.classList.remove('d-none');
     })
     .catch(() => {
-      content.innerHTML = '💡 Eat a variety of colorful vegetables for optimal nutrition!';
+      content.innerHTML = 'Opt for complex carbohydrates to maintain sustained energy levels throughout your day.';
       loading.classList.add('d-none');
       content.classList.remove('d-none');
     });
@@ -320,10 +237,14 @@ function analyseCalories() {
   const input  = document.getElementById('calorieInput').value.trim();
   const result = document.getElementById('calorieResult');
   const btn    = document.getElementById('analyseBtn');
-  if (!input) { showToast('Please enter some food items first.', 'warning'); return; }
+  
+  if (!input) { 
+    if(typeof showToast === 'function') showToast('Please enter a meal to analyze.', 'warning'); 
+    return; 
+  }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
   result.classList.add('d-none');
 
   fetch('/api/calorie-analysis', {
@@ -333,13 +254,15 @@ function analyseCalories() {
   })
   .then(r => r.json())
   .then(data => {
-    result.innerHTML = marked.parse(data.analysis || 'No analysis available.');
+    result.innerHTML = marked.parse(data.analysis || 'Analysis unavailable.');
     result.classList.remove('d-none');
   })
-  .catch(() => showToast('Error analyzing food. Please try again.', 'danger'))
+  .catch(() => {
+    if(typeof showToast === 'function') showToast('Error analyzing food. Please try again.', 'danger');
+  })
   .finally(() => {
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-search me-2"></i>Analyze Nutrition';
+    btn.innerHTML = 'Analyze Composition';
   });
 }
 </script>

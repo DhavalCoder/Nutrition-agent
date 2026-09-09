@@ -1,112 +1,117 @@
 {% extends "base.html" %}
-{% block title %}NutriGuru — Family Profiles{% endblock %}
+{% block title %}NutriGuru — Ecosystem Dynamics{% endblock %}
 
 {% block content %}
-<div class="container py-5 mt-4">
+<div class="section-padding py-5" style="min-height: 100vh;">
+  <div class="container-editorial">
 
-  <div class="text-center mb-5 animate__animated animate__fadeInDown">
-    <h1 class="page-title">👨‍👩‍👧‍👦 Family Diet Manager</h1>
-    <p class="text-muted">Manage nutrition for every family member and generate a unified family meal plan</p>
-  </div>
+    <div class="mb-5 reveal text-center mx-auto" style="max-width: 600px;">
+      <span class="eyebrow">Ecosystem</span>
+      <h1 class="section-title mb-3">Family Dynamics</h1>
+      <p class="subheading mx-auto">Synchronize the dietary constraints of your entire household into a unified nutritional strategy.</p>
+    </div>
 
-  <div class="row g-4">
-
-    <!-- ── Add Member Form ─────────────────────────────────────────────────── -->
-    <div class="col-lg-4">
-      <div class="glass-card p-4">
-        <h5 class="fw-bold mb-4"><i class="bi bi-person-plus me-2 text-success"></i>Add Family Member</h5>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Name</label>
-          <input type="text" class="form-control custom-input" id="memberName" placeholder="e.g. Priya, Rahul, Dadi">
+    <!-- ── Profile List ────────────────────────────────────────────────────── -->
+    <div class="row mb-5">
+      <div class="col-lg-12">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3 reveal" style="border-color: var(--border-light) !important;">
+          <h5 class="editorial-label m-0">Registered Profiles</h5>
+          <button class="btn-editorial-outline py-2 px-3 text-uppercase" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#addProfileModal">
+            + Append Profile
+          </button>
         </div>
 
-        <div class="row g-2 mb-3">
-          <div class="col-6">
-            <label class="form-label fw-semibold">Age</label>
-            <input type="number" class="form-control custom-input" id="memberAge" placeholder="Age" min="1" max="100">
-          </div>
-          <div class="col-6">
-            <label class="form-label fw-semibold">Gender</label>
-            <select class="form-select custom-input" id="memberGender">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
+        <div class="row g-4 reveal delay-1" id="profilesList">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-muted" role="status"></div>
+            <p class="mt-3 text-muted" style="font-family: 'Space Grotesk', sans-serif;">Retrieving ecosystem data...</p>
           </div>
         </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Nutrition Goal</label>
-          <select class="form-select custom-input" id="memberGoal">
-            <option value="healthy eating">Healthy Eating</option>
-            <option value="lose weight">Lose Weight</option>
-            <option value="gain weight">Gain Weight</option>
-            <option value="gain muscle">Gain Muscle</option>
-            <option value="manage diabetes">Manage Diabetes</option>
-            <option value="heart health">Heart Health</option>
-            <option value="growth and development">Growth & Development (Child)</option>
-            <option value="bone health">Bone Health (Senior)</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Health Conditions</label>
-          <input type="text" class="form-control custom-input" id="memberConditions"
-            placeholder="e.g. diabetes, hypertension, none">
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Allergies</label>
-          <input type="text" class="form-control custom-input" id="memberAllergies"
-            placeholder="e.g. peanuts, dairy, none">
-        </div>
-
-        <button class="btn btn-success w-100" onclick="addMember()">
-          <i class="bi bi-plus-circle me-2"></i>Add Member
-        </button>
       </div>
     </div>
 
-    <!-- ── Members List & Plan ─────────────────────────────────────────────── -->
-    <div class="col-lg-8">
-
-      <!-- Family Members Grid -->
-      <div id="familyGrid" class="row g-3 mb-4">
-        <!-- Members inserted by JS -->
-        <div class="col-12 text-center text-muted py-4" id="noMembersMsg">
-          <div style="font-size:3rem">👨‍👩‍👧‍👦</div>
-          <p class="mt-2">No family members added yet.<br>Add your first member on the left!</p>
-        </div>
-      </div>
-
-      <!-- Generate Plan Button -->
-      <div id="generateBtnSection" class="d-none mb-4">
-        <button class="btn btn-primary w-100 py-3" id="familyPlanBtn" onclick="generateFamilyPlan()">
-          <i class="bi bi-magic me-2"></i>Generate Family Meal Plan
-        </button>
-      </div>
-
-      <!-- Loading -->
-      <div id="familyLoading" class="glass-card p-5 text-center d-none">
-        <div style="font-size:3rem" class="mb-3">👨‍🍳</div>
-        <h5 class="fw-bold">Creating Your Family Plan...</h5>
-        <p class="text-muted">NutriGuru is crafting a plan that works for everyone</p>
-        <div class="progress mt-3" style="height:6px">
-          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success w-100"></div>
-        </div>
-      </div>
-
-      <!-- Result -->
-      <div id="familyResult" class="d-none">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="fw-bold mb-0">🏠 Family Nutrition Plan</h5>
-          <button class="btn btn-sm btn-outline-success" onclick="copyFamilyPlan()">
-            <i class="bi bi-clipboard me-1"></i>Copy
+    <!-- ── Family Meal Plan ────────────────────────────────────────────────── -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="art-card p-5 reveal delay-2 text-center" id="generateFamilyPlanSection">
+          <h4 class="card-title-lg mb-3">Synthesize Unified Plan</h4>
+          <p class="subheading mx-auto mb-5" style="max-width: 500px;">Generate a comprehensive meal plan that mathematically satisfies the distinct requirements of all registered profiles.</p>
+          
+          <button class="btn-editorial" id="generateFamilyBtn" onclick="generateFamilyPlan()">
+            Execute Ecosystem Synthesis
           </button>
         </div>
-        <div class="glass-card p-4 meal-plan-output" id="familyPlanContent"></div>
-      </div>
 
+        <div id="familyPlanLoading" class="art-card text-center d-none flex-column justify-content-center align-items-center mt-4 p-5">
+          <div class="spinner-grow mb-4" style="color: var(--c-clay); width: 3rem; height: 3rem;" role="status"></div>
+          <h4 class="card-title-lg mb-2">Calculating Constraints...</h4>
+          <p class="subheading" style="font-size: 1rem;">Resolving dietary intersections...</p>
+        </div>
+
+        <div id="familyPlanResult" class="d-none mt-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="editorial-label m-0">Unified Plan</h5>
+            <button class="btn-editorial-outline py-2 px-3" onclick="copyFamilyPlan()">
+              Copy to Clipboard
+            </button>
+          </div>
+          <div class="art-card p-5" style="background: var(--bg-surface);">
+            <div id="familyPlanContent" style="font-family: 'Manrope', sans-serif; color: var(--t-body); line-height: 1.8;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Add Profile -->
+<div class="modal fade" id="addProfileModal" tabindex="-1" style="backdrop-filter: blur(8px);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content art-card p-0" style="background: var(--bg-surface-2); border-radius: var(--r-xl); overflow: hidden;">
+      <div class="modal-header border-bottom px-4 py-3" style="border-color: var(--border-light) !important;">
+        <h5 class="editorial-label m-0">New Profile Initialization</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1); opacity: 0.5;"></button>
+      </div>
+      <div class="modal-body px-4 py-4">
+        <form id="addProfileForm">
+          <div class="mb-4">
+            <label class="editorial-label">Name</label>
+            <input type="text" class="editorial-input py-2" id="newName" required>
+          </div>
+          <div class="d-flex gap-3 mb-4">
+            <div class="w-50">
+              <label class="editorial-label">Age</label>
+              <input type="number" class="editorial-input py-2" id="newAge" required>
+            </div>
+            <div class="w-50">
+              <label class="editorial-label">Gender</label>
+              <select class="editorial-input py-2" id="newGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="editorial-label">Dietary Type</label>
+            <select class="editorial-input py-2" id="newDietType">
+              <option value="balanced">Balanced</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+              <option value="diabetic">Diabetic</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="editorial-label">Allergies</label>
+            <input type="text" class="editorial-input py-2" id="newAllergies" placeholder="e.g. peanuts">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-top px-4 py-3" style="border-color: var(--border-light) !important;">
+        <button type="button" class="btn-editorial-outline py-2 px-3" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-editorial py-2 px-4" onclick="addProfile()">Initialize</button>
+      </div>
     </div>
   </div>
 </div>
@@ -114,111 +119,120 @@
 
 {% block scripts %}
 <script>
-let familyMembers = [];
+document.addEventListener('DOMContentLoaded', loadProfiles);
 
-function addMember() {
-  const name       = document.getElementById('memberName').value.trim();
-  const age        = document.getElementById('memberAge').value;
-  const gender     = document.getElementById('memberGender').value;
-  const goal       = document.getElementById('memberGoal').value;
-  const conditions = document.getElementById('memberConditions').value || 'none';
-  const allergies  = document.getElementById('memberAllergies').value  || 'none';
-
-  if (!name || !age) { showToast('Please enter at least a name and age.', 'warning'); return; }
-
-  const member = { id: Date.now(), name, age: parseInt(age), gender, goal, conditions, allergies };
-  familyMembers.push(member);
-  renderMembers();
-  clearAddForm();
-  showToast(`${name} added to family! 👍`, 'success');
+function loadProfiles() {
+  fetch('/api/family')
+    .then(r => r.json())
+    .then(profiles => {
+      const list = document.getElementById('profilesList');
+      if (profiles.length === 0) {
+        list.innerHTML = `<div class="col-12"><div class="art-card text-center py-5" style="border-style: dashed; background: transparent;"><p class="subheading mx-auto mb-0" style="font-size: 1rem;">No profiles registered. Append a profile to begin.</p></div></div>`;
+        return;
+      }
+      
+      let html = '';
+      profiles.forEach((p, idx) => {
+        html += `
+          <div class="col-md-4">
+            <div class="art-card p-4 h-100" style="background: var(--bg-surface-3);">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title-lg mb-0" style="font-size: 1.5rem;">${p.name}</h5>
+                <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" onclick="deleteProfile(${idx})" style="opacity: 0.5;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
+              </div>
+              <div class="data-grid border-0 p-0 m-0 mt-3 gap-2" style="grid-template-columns: 1fr 1fr;">
+                <div><span class="editorial-label">Age</span><div style="font-family:'Space Grotesk';">${p.age}</div></div>
+                <div><span class="editorial-label">Type</span><div style="font-family:'Space Grotesk'; text-transform:capitalize;">${p.diet_type}</div></div>
+              </div>
+              ${p.allergies ? `<div class="mt-3"><span class="editorial-label">Exclusions</span><div style="font-size:0.9rem; color:var(--c-clay);">${p.allergies}</div></div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById('profilesList').innerHTML = `<div class="col-12"><div class="art-card text-center py-5"><p class="text-danger">Failed to retrieve ecosystem data.</p></div></div>`;
+    });
 }
 
-function renderMembers() {
-  const grid = document.getElementById('familyGrid');
-  const noMsg = document.getElementById('noMembersMsg');
-  const genSection = document.getElementById('generateBtnSection');
-
-  if (familyMembers.length === 0) {
-    grid.innerHTML = '';
-    grid.appendChild(noMsg);
-    noMsg.classList.remove('d-none');
-    genSection.classList.add('d-none');
+function addProfile() {
+  const name = document.getElementById('newName').value.trim();
+  const age = document.getElementById('newAge').value;
+  if (!name || !age) {
+    if(typeof showToast === 'function') showToast('Name and age required.', 'warning');
     return;
   }
+  
+  const profile = {
+    name: name,
+    age: parseInt(age),
+    gender: document.getElementById('newGender').value,
+    diet_type: document.getElementById('newDietType').value,
+    allergies: document.getElementById('newAllergies').value.trim()
+  };
 
-  noMsg.classList.add('d-none');
-  genSection.classList.remove('d-none');
-
-  const cards = familyMembers.map(m => {
-    const emoji = m.age < 13 ? '👶' : m.age > 60 ? '👴' : m.gender === 'female' ? '👩' : '👨';
-    const condBadge = m.conditions !== 'none' ? `<span class="badge bg-warning-subtle text-warning me-1">${m.conditions}</span>` : '';
-    const allergyBadge = m.allergies !== 'none' ? `<span class="badge bg-danger-subtle text-danger">⚠️ ${m.allergies}</span>` : '';
-    return `
-      <div class="col-sm-6 col-md-4 animate__animated animate__fadeInUp">
-        <div class="member-card glass-card p-3">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="member-emoji">${emoji}</div>
-            <button class="btn btn-sm btn-link text-danger p-0" onclick="removeMember(${m.id})">
-              <i class="bi bi-x-circle"></i>
-            </button>
-          </div>
-          <h6 class="fw-bold mt-2 mb-1">${m.name}</h6>
-          <div class="text-muted small mb-2">${m.age} yrs • ${m.gender}</div>
-          <div class="mb-1"><span class="badge bg-success-subtle text-success">🎯 ${m.goal}</span></div>
-          <div>${condBadge}${allergyBadge}</div>
-        </div>
-      </div>`;
-  }).join('');
-
-  grid.innerHTML = cards;
-}
-
-function removeMember(id) {
-  familyMembers = familyMembers.filter(m => m.id !== id);
-  renderMembers();
-  if (familyMembers.length === 0) {
-    document.getElementById('familyResult').classList.add('d-none');
-  }
-}
-
-function clearAddForm() {
-  ['memberName','memberAge','memberConditions','memberAllergies'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-}
-
-function generateFamilyPlan() {
-  if (familyMembers.length === 0) { showToast('Add at least one family member first.', 'warning'); return; }
-
-  document.getElementById('familyResult').classList.add('d-none');
-  document.getElementById('familyLoading').classList.remove('d-none');
-  document.getElementById('familyPlanBtn').disabled = true;
-
-  fetch('/api/family-plan', {
+  fetch('/api/family', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ members: familyMembers })
+    body: JSON.stringify(profile)
   })
   .then(r => r.json())
   .then(data => {
-    document.getElementById('familyPlanContent').innerHTML = marked.parse(data.family_plan || 'No plan generated.');
-    document.getElementById('familyLoading').classList.add('d-none');
-    document.getElementById('familyResult').classList.remove('d-none');
-    showToast('Family plan ready! 🏠', 'success');
-  })
-  .catch(() => {
-    document.getElementById('familyLoading').classList.add('d-none');
-    showToast('Error generating plan. Please try again.', 'danger');
-  })
-  .finally(() => { document.getElementById('familyPlanBtn').disabled = false; });
+    if(typeof showToast === 'function') showToast(data.message || 'Profile appended.', 'success');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addProfileModal'));
+    if(modal) modal.hide();
+    document.getElementById('addProfileForm').reset();
+    loadProfiles();
+  });
+}
+
+function deleteProfile(idx) {
+  if(!confirm('Delete this profile?')) return;
+  fetch(`/api/family/${idx}`, { method: 'DELETE' })
+    .then(r => r.json())
+    .then(data => {
+      if(typeof showToast === 'function') showToast('Profile terminated.', 'success');
+      loadProfiles();
+    });
+}
+
+function generateFamilyPlan() {
+  const btn = document.getElementById('generateFamilyBtn');
+  document.getElementById('generateFamilyPlanSection').classList.add('d-none');
+  document.getElementById('familyPlanResult').classList.add('d-none');
+  document.getElementById('familyPlanLoading').classList.remove('d-none');
+  document.getElementById('familyPlanLoading').classList.add('d-flex');
+  
+  fetch('/api/family-plan', { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      if(data.error) { throw new Error(data.error); }
+      document.getElementById('familyPlanContent').innerHTML = marked.parse(data.meal_plan || 'Synthesis failed.');
+      document.getElementById('familyPlanLoading').classList.add('d-none');
+      document.getElementById('familyPlanLoading').classList.remove('d-flex');
+      document.getElementById('familyPlanResult').classList.remove('d-none');
+      document.getElementById('generateFamilyPlanSection').classList.remove('d-none');
+    })
+    .catch(e => {
+      document.getElementById('familyPlanLoading').classList.add('d-none');
+      document.getElementById('familyPlanLoading').classList.remove('d-flex');
+      document.getElementById('generateFamilyPlanSection').classList.remove('d-none');
+      if(typeof showToast === 'function') showToast(e.message || 'Synthesis failed.', 'danger');
+    });
 }
 
 function copyFamilyPlan() {
   const text = document.getElementById('familyPlanContent').innerText;
-  navigator.clipboard.writeText(text).then(() => showToast('Family plan copied! 📋', 'success'));
+  if(typeof copyToClipboard === 'function') {
+    copyToClipboard(text, 'Unified Plan');
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      if(typeof showToast === 'function') showToast('Copied to clipboard.', 'success');
+    });
+  }
 }
-
-// Pre-load example family
-window.addEventListener('DOMContentLoaded', () => renderMembers());
 </script>
 {% endblock %}

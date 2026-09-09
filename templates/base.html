@@ -5,65 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}NutriGuru AI{% endblock %}</title>
 
-  <!-- Bootstrap 5.3 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
-  <!-- Premium Fonts: DM Serif Display (hero) | Plus Jakarta Sans (UI) | DM Sans (body) -->
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <!-- Animate.css -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
-  <!-- Custom CSS v5 -->
-  <link href="{{ url_for('static', filename='css/style.css') }}?v=5" rel="stylesheet"/>
+  <link href="{{ url_for('static', filename='css/style.css') }}?v=7" rel="stylesheet"/>
 </head>
 <body class="page-transition">
 
-<!-- ── Navbar ──────────────────────────────────────────────────────────────── -->
-<nav class="navbar navbar-expand-lg fixed-top ng-nav" id="mainNav">
-  <div class="container px-4">
-    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-      <div class="brand-logo">
-        <img src="https://api.dicebear.com/7.x/shapes/svg?seed=nutriguru&backgroundColor=FB6E52&shape1Color=FECE55"
-             width="36" height="36" alt="logo" style="border-radius:10px"/>
-      </div>
-      <span class="brand-name">NutriGuru</span>
-      <span class="brand-pill">AI</span>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top ng-nav" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="container-editorial w-100 d-flex justify-content-between align-items-center">
+    
+    <a class="navbar-brand text-decoration-none" href="/" aria-label="NutriGuru home">
+      <span class="brand-name">NutriGuru<span>.</span></span>
     </a>
 
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler border-0 shadow-none d-lg-none" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="filter: invert(1);">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-        <li class="nav-item">
-          <a class="nav-link ng-link {% if request.endpoint == 'index' %}active{% endif %}" href="/">
-            <i class="bi bi-house me-1"></i>Home
-          </a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-lg-center gap-4" role="list">
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'index' %}active{% endif %}"
+             href="/" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>Intelligence</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link ng-link {% if request.endpoint == 'chat' %}active{% endif %}" href="/chat">
-            <i class="bi bi-chat-dots me-1"></i>Chat
-          </a>
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'chat' %}active{% endif %}"
+             href="/chat" {% if request.endpoint == 'chat' %}aria-current="page"{% endif %}>Agent</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link ng-link {% if request.endpoint == 'meal_plan' %}active{% endif %}" href="/meal-plan">
-            <i class="bi bi-calendar3 me-1"></i>Meal Plan
-          </a>
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'meal_plan' %}active{% endif %}"
+             href="/meal-plan" {% if request.endpoint == 'meal_plan' %}aria-current="page"{% endif %}>Algorithms</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link ng-link {% if request.endpoint == 'bmi' %}active{% endif %}" href="/bmi">
-            <i class="bi bi-activity me-1"></i>BMI
-          </a>
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'bmi' %}active{% endif %}"
+             href="/bmi" {% if request.endpoint == 'bmi' %}aria-current="page"{% endif %}>Metrics</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link ng-link {% if request.endpoint == 'family' %}active{% endif %}" href="/family">
-            <i class="bi bi-people me-1"></i>Family
-          </a>
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'family' %}active{% endif %}"
+             href="/family" {% if request.endpoint == 'family' %}aria-current="page"{% endif %}>Ecosystem</a>
         </li>
-        <li class="nav-item ms-2">
-          <button class="btn ng-theme-btn" id="themeToggle" aria-label="Toggle theme">
-            <i class="bi bi-sun-fill" id="themeIcon"></i>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link" href="{{ url_for('logout') }}">Disconnect</a>
+        </li>
+        {% else %}
+        <li class="nav-item" role="listitem">
+          <a class="nav-link ng-link {% if request.endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">Initialize Portal</a>
+        </li>
+        {% endif %}
+        <li class="nav-item ms-lg-3 mt-3 mt-lg-0" role="listitem">
+          <button class="ng-theme-btn" id="themeToggle" type="button" aria-label="Toggle colour theme">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           </button>
         </li>
       </ul>
@@ -71,62 +68,55 @@
   </div>
 </nav>
 
-<!-- ── Page Loader ─────────────────────────────────────────────────────────── -->
-<div id="pageLoader" class="page-loader">
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader" aria-hidden="true">
   <div class="loader-inner">
     <div class="loader-logo">🥗</div>
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
 </div>
 
-<!-- ── Main ────────────────────────────────────────────────────────────────── -->
-<main class="main-wrap">
+<!-- Main Content -->
+<main id="main-content" class="main-wrap">
   {% block content %}{% endblock %}
 </main>
 
-<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
-<footer class="ng-footer">
-  <div class="container py-5">
-    <div class="row g-4 align-items-center">
-      <div class="col-md-4">
-        <div class="d-flex align-items-center gap-2 mb-2">
-          <span style="font-size:1.8rem">🥗</span>
-          <span class="brand-name" style="font-size:1.4rem">NutriGuru</span>
+<!-- Footer -->
+<footer class="footer-artistic" role="contentinfo">
+  <div class="container-editorial">
+    <div class="grid-12">
+      <div class="col-lg-12 text-center" style="grid-column: 1 / 13;">
+        <div class="footer-brand reveal">NutriGuru.</div>
+        <div class="d-flex justify-content-center gap-4 mb-5 reveal delay-1">
+          <a href="/" class="footer-link">Intelligence</a>
+          <a href="/chat" class="footer-link">Agent</a>
+          <a href="/meal-plan" class="footer-link">Algorithms</a>
+          <a href="/bmi" class="footer-link">Metrics</a>
+          <a href="/family" class="footer-link">Ecosystem</a>
         </div>
-        <p class="footer-text">Your AI-powered nutrition companion. Eat smart, live well.</p>
-      </div>
-      <div class="col-md-4">
-        <div class="d-flex justify-content-md-center gap-4 flex-wrap">
-          <a href="/" class="footer-link">Home</a>
-          <a href="/chat" class="footer-link">Chat</a>
-          <a href="/meal-plan" class="footer-link">Meal Plan</a>
-          <a href="/bmi" class="footer-link">BMI</a>
-          <a href="/family" class="footer-link">Family</a>
+        <div class="reveal delay-2" style="font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; color: rgba(244,243,239,0.4); text-transform: uppercase; letter-spacing: 0.1em;">
+          Powered by Llama 3 &bull; Not a substitute for clinical medical advice.<br><br>
+          &copy; 2024 NutriGuru Ecosystem. All rights reserved.
         </div>
-      </div>
-      <div class="col-md-4 text-md-end">
-        <p class="footer-text small">Powered by Groq + Llama 3</p>
-        <p class="footer-text small opacity-50">Not a substitute for medical advice.</p>
       </div>
     </div>
   </div>
 </footer>
 
-<!-- ── Floating Chat Button ────────────────────────────────────────────────── -->
+<!-- Floating Chat Button (not on chat page) -->
 {% if request.endpoint != 'chat' %}
-<a href="/chat" class="fab-chat" title="Chat with NutriGuru">
-  <i class="bi bi-chat-dots-fill"></i>
-  <span class="fab-pulse"></span>
+<a href="/chat" class="fab-chat" title="Awaken Agent" aria-label="Open nutrition chat" 
+   style="position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; background: var(--t-display); color: var(--bg-body); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); z-index: 1000; transition: transform var(--t-fast);">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
 </a>
 {% endif %}
 
-<!-- ── Toast Container ─────────────────────────────────────────────────────── -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-4" id="toastContainer" aria-live="polite"></div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}?v=5"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}?v=6"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

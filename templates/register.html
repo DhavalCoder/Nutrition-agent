@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}NutriGuru — Register{% endblock %}
+
+{% block content %}
+<div class="section-padding py-5 d-flex align-items-center justify-content-center" style="min-height: 100vh; background: var(--bg-surface-3);">
+  <div class="container-editorial" style="max-width: 500px; width: 100%;">
+    
+    <div class="art-card text-center p-5 reveal">
+      <span class="eyebrow">New Registration</span>
+      <h2 class="card-title-lg mb-4 mt-2">Establish Profile</h2>
+      
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-danger" style="background: var(--bg-surface-2); border: 1px solid var(--border-light); color: var(--t-display); border-radius: var(--r-md); font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}" class="text-start mt-4">
+        <div class="mb-4">
+          <label class="editorial-label">Identity (Username)</label>
+          <input type="text" class="editorial-input py-2" name="username" required>
+        </div>
+        <div class="mb-5">
+          <label class="editorial-label">Secure Access Key (Password)</label>
+          <input type="password" class="editorial-input py-2" name="password" required>
+        </div>
+        
+        <button type="submit" class="btn-editorial w-100 justify-content-center py-3">
+          Initialize Profile
+        </button>
+      </form>
+
+      <div class="mt-4 pt-4 border-top" style="border-color: var(--border-light) !important;">
+        <p class="subheading mx-auto mb-0" style="font-size: 0.9rem;">
+          Already registered? <a href="{{ url_for('login') }}" style="color: var(--c-clay); font-weight: 600; text-decoration: none;">Return to portal</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

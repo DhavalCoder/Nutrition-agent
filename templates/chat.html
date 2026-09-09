@@ -1,156 +1,168 @@
 {% extends "base.html" %}
-{% block title %}NutriGuru — AI Chat{% endblock %}
+{% block title %}NutriGuru — Intelligence Agent{% endblock %}
 
 {% block content %}
-<div class="chat-page">
-  <div class="container-fluid h-100">
-    <div class="row h-100 g-0">
+<script>
+  // Prevent navbar from hiding on the chat page
+  document.body.classList.add('no-hide-nav');
+</script>
 
-      <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
-      <div class="col-lg-3 chat-sidebar d-none d-lg-flex flex-column p-4">
-        <div class="mb-4">
-          <h5 class="fw-bold mb-1">🥗 NutriGuru Chat</h5>
-          <p class="text-muted small">AI-powered nutrition assistant</p>
-        </div>
+<div class="section-padding py-4" style="background: var(--bg-surface-3); min-height: 100vh;">
+  <div class="container-editorial">
+    
+    <!-- Title Area -->
+    <div class="mb-4 reveal">
+      <h1 class="card-title-lg mb-1">Nutrition Agent</h1>
+      <p class="text-muted" style="font-family: 'Manrope', sans-serif;">Your personal intelligence layer for dietary science and Indian cuisine.</p>
+    </div>
 
-        <!-- Quick Profile Form -->
-        <div class="glass-card p-3 mb-4">
-          <h6 class="mb-3 fw-semibold"><i class="bi bi-person-circle me-2 text-success"></i>My Profile</h6>
-          <div class="row g-2">
-            <div class="col-12">
-              <input type="text" class="form-control form-control-sm custom-input" id="profileName" placeholder="Your name">
-            </div>
-            <div class="col-6">
-              <input type="number" class="form-control form-control-sm custom-input" id="profileAge" placeholder="Age">
-            </div>
-            <div class="col-6">
-              <select class="form-select form-select-sm custom-input" id="profileGender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="col-6">
-              <input type="number" class="form-control form-control-sm custom-input" id="profileWeight" placeholder="Weight (kg)">
-            </div>
-            <div class="col-6">
-              <input type="number" class="form-control form-control-sm custom-input" id="profileHeight" placeholder="Height (cm)">
-            </div>
-            <div class="col-12">
-              <select class="form-select form-select-sm custom-input" id="profileGoal">
-                <option value="lose weight">Lose Weight</option>
-                <option value="gain muscle">Gain Muscle</option>
-                <option value="maintain weight">Maintain Weight</option>
-                <option value="improve health">Improve Health</option>
-                <option value="manage diabetes">Manage Diabetes</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <input type="text" class="form-control form-control-sm custom-input" id="profileAllergies" placeholder="Allergies (e.g. peanuts)">
-            </div>
-            <div class="col-12">
-              <input type="text" class="form-control form-control-sm custom-input" id="profileConditions" placeholder="Health conditions">
-            </div>
-            <div class="col-12">
-              <button class="btn btn-success btn-sm w-100" onclick="saveProfile()">
-                <i class="bi bi-check-circle me-1"></i>Save Profile
+    <div class="agent-wrapper reveal delay-2">
+      <div class="row h-100 g-0 m-0">
+        
+        <!-- ── Settings Sidebar (Profile) ─────────────────────────────────── -->
+        <div class="col-lg-3 d-none d-lg-flex flex-column border-end" style="border-color: var(--border-light) !important; background: var(--bg-surface); padding: 2rem; overflow-y: auto;">
+          
+          <div class="mb-5">
+            <span class="eyebrow">Biological Profile</span>
+            <div class="mt-4 d-flex flex-column gap-4">
+              <div>
+                <label class="editorial-label">Name</label>
+                <input type="text" class="editorial-input py-2" id="profileName" placeholder="Enter your name">
+              </div>
+              
+              <div class="d-flex gap-3">
+                <div class="w-50">
+                  <label class="editorial-label">Age</label>
+                  <input type="number" class="editorial-input py-2" id="profileAge" placeholder="Years">
+                </div>
+                <div class="w-50">
+                  <label class="editorial-label">Gender</label>
+                  <select class="editorial-input py-2" id="profileGender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex gap-3">
+                <div class="w-50">
+                  <label class="editorial-label">Weight (kg)</label>
+                  <input type="number" class="editorial-input py-2" id="profileWeight" placeholder="kg">
+                </div>
+                <div class="w-50">
+                  <label class="editorial-label">Height (cm)</label>
+                  <input type="number" class="editorial-input py-2" id="profileHeight" placeholder="cm">
+                </div>
+              </div>
+
+              <div>
+                <label class="editorial-label">Primary Goal</label>
+                <select class="editorial-input py-2" id="profileGoal">
+                  <option value="lose weight">Fat Loss</option>
+                  <option value="gain muscle">Hypertrophy / Muscle Gain</option>
+                  <option value="maintain weight">Metabolic Maintenance</option>
+                  <option value="improve health">General Longevity</option>
+                  <option value="manage diabetes">Blood Sugar Management</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="editorial-label">Allergies</label>
+                <input type="text" class="editorial-input py-2" id="profileAllergies" placeholder="e.g. peanuts, dairy">
+              </div>
+              
+              <div>
+                <label class="editorial-label">Conditions</label>
+                <input type="text" class="editorial-input py-2" id="profileConditions" placeholder="e.g. PCOS, hypertension">
+              </div>
+
+              <button class="btn-editorial-outline w-100 justify-content-center py-3 mt-2" onclick="saveProfile()">
+                Synchronize Profile
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- Quick Prompts -->
-        <div class="mb-3">
-          <h6 class="fw-semibold mb-2"><i class="bi bi-lightning me-2 text-warning"></i>Quick Prompts</h6>
-          <div class="d-flex flex-column gap-2">
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What should I eat for breakfast as an Indian vegetarian?')">🌅 Vegetarian Breakfast Ideas</button>
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Give me a high protein Indian meal plan for muscle gain')">💪 High Protein Plan</button>
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What are the healthiest Indian spices and their benefits?')">🌶️ Spice Health Benefits</button>
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Create a diabetic-friendly Indian diet plan')">🏥 Diabetic Diet Plan</button>
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('What is the calorie count of a typical Indian thali?')">🍱 Thali Calories</button>
-            <button class="quick-prompt-btn" onclick="sendQuickPrompt('Healthy swaps for Indian street food')">🥙 Healthy Street Food</button>
+          <div class="mt-auto pt-4 border-top" style="border-color: var(--border-light) !important;">
+            <button class="btn btn-link text-decoration-none p-0 w-100 text-start" style="color: var(--c-clay); font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;" onclick="clearChat()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              Clear Conversation History
+            </button>
           </div>
+
         </div>
 
-        <div class="mt-auto">
-          <button class="btn btn-outline-danger btn-sm w-100" onclick="clearChat()">
-            <i class="bi bi-trash me-1"></i>Clear Chat
-          </button>
-        </div>
-      </div>
+        <!-- ── Chat Interface ────────────────────────────────────────────── -->
+        <div class="col-lg-9 d-flex flex-column chat-main">
+          
+          <div class="agent-header">
+            <div class="agent-identity">
+              <div class="agent-avatar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--t-display)" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div>
+                <div class="agent-name">NutriGuru AI</div>
+                <div class="agent-status">System Online &bull; Groq Engine Active</div>
+              </div>
+            </div>
+            
+            <button class="btn btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" style="color: var(--t-display);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>
+            </button>
+          </div>
 
-      <!-- ── Chat Area ───────────────────────────────────────────────────── -->
-      <div class="col-lg-9 d-flex flex-column chat-main">
-
-        <!-- Chat Header -->
-        <div class="chat-header d-flex align-items-center justify-content-between px-4 py-3">
-          <div class="d-flex align-items-center gap-3">
-            <div class="agent-avatar">🥗</div>
-            <div>
-              <div class="fw-semibold">NutriGuru AI</div>
-              <div class="text-success small d-flex align-items-center gap-1">
-                <span class="status-dot"></span>Online
+          <!-- Messages -->
+          <div class="chat-messages" id="chatMessages">
+            <div class="message-row bot-row reveal">
+              <div class="message-bubble bot-bubble">
+                <p class="mb-2" style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;"><strong>Initialization complete.</strong></p>
+                <p class="mb-2">I am NutriGuru, your intelligence layer for dietary science. I am calibrated to assist you with:</p>
+                <ul class="mb-2 text-muted">
+                  <li>Macronutrient optimization &amp; metabolic analysis.</li>
+                  <li>Deep knowledge of Indian cuisine (from regional specialties to Ayurvedic principles).</li>
+                  <li>Clinical dietary planning (Diabetes, PCOS, Hypertension).</li>
+                  <li>Algorithmic meal structuring for your specific biological profile.</li>
+                </ul>
+                <p class="mb-0 text-muted">Update your profile parameters on the left to calibrate my responses, or simply state your query below.</p>
               </div>
             </div>
           </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas">
-              <i class="bi bi-person-circle"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger" onclick="clearChat()">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
 
-        <!-- Messages -->
-        <div class="chat-messages flex-grow-1 overflow-auto px-4 py-3" id="chatMessages">
-          <!-- Welcome message -->
-          <div class="message-row bot-row animate__animated animate__fadeInUp">
-            <div class="message-avatar">🥗</div>
-            <div class="message-bubble bot-bubble">
-              <p class="mb-1">🙏 <strong>Namaste! I'm NutriGuru</strong>, your personal AI nutrition expert!</p>
-              <p class="mb-1">I can help you with:</p>
-              <ul class="mb-1">
-                <li>🥗 Personalised meal plans (Indian cuisine specialist)</li>
-                <li>🔢 Calorie & macro analysis</li>
-                <li>💊 Nutrition for health conditions (diabetes, PCOS, etc.)</li>
-                <li>👨‍👩‍👧 Family diet management</li>
-                <li>🌶️ Benefits of Indian spices & superfoods</li>
-              </ul>
-              <p class="mb-0">Fill in your profile on the left for personalised advice, or just start chatting! 😊</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Typing Indicator -->
-        <div class="typing-indicator d-none px-4" id="typingIndicator">
-          <div class="message-row bot-row">
-            <div class="message-avatar">🥗</div>
-            <div class="message-bubble bot-bubble typing-bubble">
+          <!-- Thinking Indicator -->
+          <div class="typing-indicator d-none px-5 py-2" id="typingIndicator">
+            <div class="thinking-dots">
               <span></span><span></span><span></span>
             </div>
           </div>
-        </div>
 
-        <!-- Input Area -->
-        <div class="chat-input-area px-4 py-3">
-          <div class="d-flex gap-2 align-items-end">
-            <textarea
-              class="form-control custom-input chat-textarea"
-              id="chatInput"
-              rows="1"
-              placeholder="Ask about nutrition, meal plans, calories, Indian food..."
-              onkeydown="handleChatKeydown(event)"
-              oninput="autoResize(this)"
-            ></textarea>
-            <button class="btn btn-primary send-btn" id="sendBtn" onclick="sendMessage()">
-              <i class="bi bi-send-fill"></i>
-            </button>
+          <!-- Input Area -->
+          <div class="chat-input-wrapper">
+            
+            <!-- Prompts -->
+            <div class="d-flex gap-2 overflow-auto pb-3 mb-2" style="scrollbar-width: none;">
+              <button class="btn-editorial-outline py-1 px-3" style="font-size:0.75rem; border-radius: 4px; white-space: nowrap;" onclick="sendQuickPrompt('Optimize my protein intake for an Indian vegetarian diet.')">Optimize Protein (Vegetarian)</button>
+              <button class="btn-editorial-outline py-1 px-3" style="font-size:0.75rem; border-radius: 4px; white-space: nowrap;" onclick="sendQuickPrompt('Analyze the glycemic impact of a standard North Indian Thali.')">Analyze Glycemic Impact</button>
+              <button class="btn-editorial-outline py-1 px-3" style="font-size:0.75rem; border-radius: 4px; white-space: nowrap;" onclick="sendQuickPrompt('Generate a metabolic maintenance plan.')">Metabolic Maintenance</button>
+            </div>
+
+            <div class="chat-input-box">
+              <textarea
+                class="chat-textarea w-100"
+                id="chatInput"
+                rows="1"
+                placeholder="Query the nutritional database..."
+                onkeydown="handleChatKeydown(event)"
+                oninput="autoResize(this)"
+              ></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="text-center mt-3" style="font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem; color: var(--t-muted); text-transform: uppercase; letter-spacing: 0.1em;">
+              Press <kbd style="background: var(--border-light); padding: 2px 4px; border-radius: 2px; color: var(--t-display);">Enter</kbd> to execute &bull; <kbd style="background: var(--border-light); padding: 2px 4px; border-radius: 2px; color: var(--t-display);">Shift+Enter</kbd> for line break
+            </div>
           </div>
-          <div class="text-muted small mt-2 text-center">
-            Press <kbd>Enter</kbd> to send &bull; <kbd>Shift+Enter</kbd> for new line
-          </div>
+
         </div>
       </div>
     </div>
@@ -158,29 +170,26 @@
 </div>
 
 <!-- Mobile Profile Offcanvas -->
-<div class="offcanvas offcanvas-start" id="profileOffcanvas">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">My Profile</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+<div class="offcanvas offcanvas-start" id="profileOffcanvas" style="background: var(--bg-surface); color: var(--t-display);">
+  <div class="offcanvas-header border-bottom" style="border-color: var(--border-light) !important;">
+    <h5 class="offcanvas-title" style="font-family: 'Cormorant Garamond', serif;">Biological Profile</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" style="filter: invert(1);"></button>
   </div>
   <div class="offcanvas-body">
-    <div class="row g-2">
-      <div class="col-12"><input type="text" class="form-control custom-input" id="mProfileName" placeholder="Your name"></div>
-      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileAge" placeholder="Age"></div>
-      <div class="col-6">
-        <select class="form-select custom-input" id="mProfileGender">
-          <option value="male">Male</option><option value="female">Female</option>
-        </select>
+    <!-- Duplicate form for mobile (abbreviated for brevity) -->
+    <div class="d-flex flex-column gap-4 mt-2">
+      <div><label class="editorial-label">Name</label><input type="text" class="editorial-input py-1" id="mProfileName"></div>
+      <div class="d-flex gap-3">
+        <div class="w-50"><label class="editorial-label">Age</label><input type="number" class="editorial-input py-1" id="mProfileAge"></div>
+        <div class="w-50"><label class="editorial-label">Gender</label><select class="editorial-input py-1" id="mProfileGender"><option value="male">Male</option><option value="female">Female</option></select></div>
       </div>
-      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileWeight" placeholder="Weight (kg)"></div>
-      <div class="col-6"><input type="number" class="form-control custom-input" id="mProfileHeight" placeholder="Height (cm)"></div>
-      <div class="col-12">
-        <select class="form-select custom-input" id="mProfileGoal">
-          <option>Lose Weight</option><option>Gain Muscle</option><option>Maintain Weight</option>
-        </select>
+      <div class="d-flex gap-3">
+        <div class="w-50"><label class="editorial-label">Weight (kg)</label><input type="number" class="editorial-input py-1" id="mProfileWeight"></div>
+        <div class="w-50"><label class="editorial-label">Height (cm)</label><input type="number" class="editorial-input py-1" id="mProfileHeight"></div>
       </div>
-      <div class="col-12"><input type="text" class="form-control custom-input" id="mProfileAllergies" placeholder="Allergies"></div>
-      <div class="col-12"><button class="btn btn-success w-100" onclick="saveProfile()">Save Profile</button></div>
+      <div><label class="editorial-label">Goal</label><select class="editorial-input py-1" id="mProfileGoal"><option>Lose Weight</option><option>Gain Muscle</option><option>Maintain Weight</option></select></div>
+      <div><label class="editorial-label">Allergies</label><input type="text" class="editorial-input py-1" id="mProfileAllergies"></div>
+      <button class="btn-editorial-outline w-100 justify-content-center mt-3" onclick="saveProfile()">Synchronize</button>
     </div>
   </div>
 </div>
@@ -214,8 +223,8 @@ function sendMessage() {
     body: JSON.stringify({ message: msg })
   })
   .then(r => r.json())
-  .then(data => { showTyping(false); appendMessage(data.reply || 'No response.', 'bot'); })
-  .catch(() => { showTyping(false); appendMessage('⚠️ Connection error. Please try again.', 'bot'); })
+  .then(data => { showTyping(false); appendMessage(data.reply || 'Data unavailable.', 'bot'); })
+  .catch(() => { showTyping(false); appendMessage('⚠️ Neural link disrupted. Please retry.', 'bot'); })
   .finally(() => { document.getElementById('sendBtn').disabled = false; });
 }
 
@@ -227,14 +236,9 @@ function sendQuickPrompt(text) {
 function appendMessage(text, sender) {
   const container = document.getElementById('chatMessages');
   const row = document.createElement('div');
-  row.className = `message-row ${sender === 'user' ? 'user-row' : 'bot-row'} animate__animated animate__fadeInUp`;
-  const avatar = sender === 'user' ? '👤' : '🥗';
+  row.className = `message-row ${sender === 'user' ? 'user-row' : 'bot-row'} reveal in-view`;
   const bubbleClass = sender === 'user' ? 'user-bubble' : 'bot-bubble';
-  row.innerHTML = `
-    ${sender === 'bot' ? `<div class="message-avatar">${avatar}</div>` : ''}
-    <div class="message-bubble ${bubbleClass}">${marked.parse(text)}</div>
-    ${sender === 'user' ? `<div class="message-avatar">${avatar}</div>` : ''}
-  `;
+  row.innerHTML = `<div class="message-bubble ${bubbleClass}">${marked.parse(text)}</div>`;
   container.appendChild(row);
   container.scrollTop = container.scrollHeight;
 }
@@ -249,11 +253,10 @@ function clearChat() {
   fetch('/api/clear-chat', { method: 'POST' })
     .then(() => {
       document.getElementById('chatMessages').innerHTML = `
-        <div class="message-row bot-row animate__animated animate__fadeIn">
-          <div class="message-avatar">🥗</div>
-          <div class="message-bubble bot-bubble">Chat cleared! How can I help you with your nutrition today? 🌟</div>
+        <div class="message-row bot-row reveal in-view">
+          <div class="message-bubble bot-bubble">Memory cleared. Standing by for new parameters.</div>
         </div>`;
-      showToast('Chat cleared!', 'success');
+      if(typeof showToast === 'function') showToast('Memory cleared.', 'info');
     });
 }
 
@@ -261,18 +264,22 @@ function saveProfile() {
   const profile = {
     name:       document.getElementById('profileName').value || document.getElementById('mProfileName')?.value,
     age:        document.getElementById('profileAge').value  || document.getElementById('mProfileAge')?.value,
-    gender:     document.getElementById('profileGender').value,
+    gender:     document.getElementById('profileGender').value || document.getElementById('mProfileGender')?.value,
     weight:     document.getElementById('profileWeight').value || document.getElementById('mProfileWeight')?.value,
     height:     document.getElementById('profileHeight').value || document.getElementById('mProfileHeight')?.value,
-    goal:       document.getElementById('profileGoal').value,
-    allergies:  document.getElementById('profileAllergies').value,
+    goal:       document.getElementById('profileGoal').value || document.getElementById('mProfileGoal')?.value,
+    allergies:  document.getElementById('profileAllergies').value || document.getElementById('mProfileAllergies')?.value,
     conditions: document.getElementById('profileConditions')?.value || '',
   };
   fetch('/api/set-profile', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(profile)
-  }).then(() => showToast('Profile saved! Responses will now be personalised for you. 🎯', 'success'));
+  }).then(() => {
+    if(typeof showToast === 'function') showToast('Biological profile synchronized.', 'success');
+    const bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('profileOffcanvas'));
+    if(bsOffcanvas) bsOffcanvas.hide();
+  });
 }
 </script>
 {% endblock %}

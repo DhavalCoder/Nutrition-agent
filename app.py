@@ -1,15 +1,36 @@
 import os
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from flask_cors import CORS
 from dotenv import load_dotenv
 from groq import Groq
 from agent_config import AGENT_CONFIG
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "nutriguru-secret-2024")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutriguru.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
+
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+with app.app_context():
+    db.create_all()
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 MAX_MESSAGE_LENGTH = 2000   # prevent token explosion / abuse
@@ -164,24 +185,67 @@ def get_json_or_400():
     return data, None
 
 
+# ── Auth Routes ───────────────────────────────────────────────────────────────
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password_hash, password):
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            flash("Invalid credentials, please try again.")
+    return render_template("login.html", agent_name=AGENT_CONFIG["agent_name"])
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists.")
+        else:
+            new_user = User(username=username, password_hash=generate_password_hash(password))
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            return redirect(url_for('index'))
+    return render_template("register.html", agent_name=AGENT_CONFIG["agent_name"])
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 # ── Page Routes ───────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
     return render_template("index.html", agent_name=AGENT_CONFIG["agent_name"])
 
 @app.route("/chat")
+@login_required
 def chat():
     return render_template("chat.html", agent_name=AGENT_CONFIG["agent_name"])
 
 @app.route("/meal-plan")
+@login_required
 def meal_plan():
     return render_template("meal_plan.html", agent_name=AGENT_CONFIG["agent_name"])
 
 @app.route("/bmi")
+@login_required
 def bmi():
     return render_template("bmi.html", agent_name=AGENT_CONFIG["agent_name"])
 
 @app.route("/family")
+@login_required
 def family():
     return render_template("family.html", agent_name=AGENT_CONFIG["agent_name"])
 

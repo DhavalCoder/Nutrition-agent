@@ -1,8 +1,12 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   NutriGuru — Main JavaScript
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   NUTRIGURU — main.js v6
+   Premium Interactions · Reduced Motion · Accessible
+   ═══════════════════════════════════════════════════════════════ */
 
-// ── Theme Management ──────────────────────────────────────────────────────────
+// ── Reduced Motion Check ──────────────────────────────────────────────────────
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'nutriguru-theme';
 
 function getTheme() {
@@ -14,17 +18,14 @@ function applyTheme(theme) {
   const icon = document.getElementById('themeIcon');
   if (icon) {
     icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+    icon.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
   }
 }
 
 function toggleTheme() {
-  const current = getTheme();
-  const next = current === 'dark' ? 'light' : 'dark';
+  const next = getTheme() === 'dark' ? 'light' : 'dark';
   localStorage.setItem(THEME_KEY, next);
   applyTheme(next);
-  
-  // Subtle transition effect
-  document.body.style.transition = 'background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s';
 }
 
 // ── Toast Notifications ───────────────────────────────────────────────────────
@@ -34,211 +35,217 @@ function showToast(message, type = 'info', duration = 4000) {
 
   const icons = { success: '✅', danger: '❌', warning: '⚠️', info: '💡' };
   const id = 'toast-' + Date.now();
-
-  const toastEl = document.createElement('div');
-  toastEl.id = id;
-  toastEl.className = `toast align-items-center text-bg-${type} border-0 show animate__animated animate__fadeInRight`;
-  toastEl.setAttribute('role', 'alert');
-  toastEl.style.cssText = 'max-width: 360px; border-radius: 14px;';
-  toastEl.innerHTML = `
+  const el = document.createElement('div');
+  el.id = id;
+  el.setAttribute('role', 'alert');
+  el.setAttribute('aria-live', 'assertive');
+  el.className = `toast align-items-center text-bg-${type} border-0 show`;
+  if (!prefersReducedMotion) el.classList.add('animate__animated', 'animate__fadeInRight');
+  el.style.cssText = 'max-width:360px;border-radius:14px;margin-bottom:8px';
+  el.innerHTML = `
     <div class="d-flex">
       <div class="toast-body d-flex align-items-center gap-2">
-        <span style="font-size:1.1rem">${icons[type] || '💬'}</span>
-        <span style="font-family:Plus Jakarta Sans,sans-serif;font-weight:600">${message}</span>
+        <span aria-hidden="true">${icons[type] || '💬'}</span>
+        <span>${message}</span>
       </div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto"
-        onclick="document.getElementById('${id}').remove()"></button>
-    </div>
-  `;
-
-  container.appendChild(toastEl);
-  setTimeout(() => { if (toastEl.parentNode) toastEl.remove(); }, duration);
+        aria-label="Close" onclick="document.getElementById('${id}').remove()"></button>
+    </div>`;
+  container.appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, duration);
 }
 
-// ── Navbar Scroll Effect ──────────────────────────────────────────────────────
-function initNavbarScroll() {
+// ── Copy to Clipboard ─────────────────────────────────────────────────────────
+function copyToClipboard(text, label = 'Content') {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => showToast(`${label} copied! 📋`, 'success'));
+  } else {
+    const el = document.createElement('textarea');
+    el.value = text; el.style.position = 'absolute'; el.style.left = '-9999px';
+    document.body.appendChild(el); el.select(); document.execCommand('copy');
+    document.body.removeChild(el); showToast(`${label} copied! 📋`, 'success');
+  }
+}
+
+// ── Debounce ──────────────────────────────────────────────────────────────────
+function debounce(fn, wait) {
+  let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), wait); };
+}
+
+// ── Navbar: Scroll Hide/Show ──────────────────────────────────────────────────
+function initNavbar() {
   const nav = document.getElementById('mainNav');
   if (!nav) return;
 
-  let lastScroll = 0;
-  let ticking = false;
+  const noHide = document.body.classList.contains('no-hide-nav');
+  let lastY = 0, ticking = false;
 
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const currentScroll = window.scrollY;
-        
-        if (currentScroll > 100) {
-          nav.style.background = 'rgba(10, 14, 18, 0.95)';
-          nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.2)';
-        } else {
-          nav.style.background = 'rgba(10, 14, 18, 0.85)';
-          nav.style.boxShadow = 'none';
-        }
-        
-        // Hide/show on scroll
-        if (currentScroll > lastScroll && currentScroll > 300) {
-          nav.style.transform = 'translateY(-100%)';
-        } else {
-          nav.style.transform = 'translateY(0)';
-        }
-        
-        lastScroll = currentScroll;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
+    if (ticking) return;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y > 60) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+      if (!noHide && !prefersReducedMotion) {
+        nav.style.transform = (y > lastY && y > 280) ? 'translateY(-100%)' : 'translateY(0)';
+      }
+      lastY = y; ticking = false;
+    });
+    ticking = true;
+  }, { passive: true });
 }
 
-// ── Intersection Observer for Scroll Animations ──────────────────────────────
+// ── Scroll Animations (IntersectionObserver) ──────────────────────────────────
 function initScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
+  if (prefersReducedMotion) {
+    // Make everything immediately visible
+    document.querySelectorAll('.reveal, .reveal-mask, .fade-in-up, .fade-in-right').forEach(el => {
+      el.style.opacity = '1'; el.style.transform = 'none';
+      if(el.classList.contains('reveal-mask')) {
+        Array.from(el.children).forEach(child => child.style.transform = 'none');
+      }
+    });
+    return;
+  }
 
-  const observer = new IntersectionObserver((entries) => {
+  const obs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('in-view');
-        observer.unobserve(entry.target);
+        obs.unobserve(entry.target);
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.fade-in-up, .fade-in-right, .bento-card, .food-card, .stat-mini')
-    .forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal, .reveal-mask, .fade-in-up, .fade-in-right').forEach(el => obs.observe(el));
 }
 
-// ── Smooth Scroll for Anchor Links ───────────────────────────────────────────
+// ── Number Counter Animation ──────────────────────────────────────────────────
+function initCounters() {
+  if (prefersReducedMotion) {
+    document.querySelectorAll('[data-count]').forEach(el => {
+      el.textContent = Number(el.dataset.count).toLocaleString();
+    });
+    return;
+  }
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const start = performance.now();
+      const update = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        const current = Math.floor(eased * target);
+        el.textContent = current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target.toLocaleString() + suffix;
+      };
+      requestAnimationFrame(update);
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(el => obs.observe(el));
+}
+
+// ── Cursor Dot (desktop only) ─────────────────────────────────────────────────
+function initCursorDot() {
+  if (prefersReducedMotion) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const dot = document.createElement('div');
+  dot.id = 'cursor-dot';
+  dot.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(dot);
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+  }, { passive: true });
+
+  // Grow on interactive elements
+  document.querySelectorAll('a, button, [role="button"], .bento-card, .food-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { dot.style.transform = 'translate(-50%,-50%) scale(3)'; dot.style.opacity = '0.25'; });
+    el.addEventListener('mouseleave', () => { dot.style.transform = 'translate(-50%,-50%) scale(1)'; dot.style.opacity = '0.55'; });
+  });
+}
+
+// ── Hero Image Parallax ───────────────────────────────────────────────────────
+function initParallax() {
+  if (prefersReducedMotion) return;
+  const imgs = document.querySelectorAll('.hero-img');
+  if (!imgs.length) return;
+
+  const handler = debounce((e) => {
+    const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    imgs.forEach((img, i) => {
+      const s = (i + 1) * 7;
+      img.style.transform = `translate(${x*s}px, ${y*s}px) scale(${1 + i * 0.012})`;
+    });
+  }, 8);
+
+  document.addEventListener('mousemove', handler, { passive: true });
+}
+
+// ── Smooth Scroll ─────────────────────────────────────────────────────────────
 function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
       if (href === '#') return;
-      
-      e.preventDefault();
       const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
   });
 }
 
-// ── Copy to Clipboard Helper ──────────────────────────────────────────────────
-function copyToClipboard(text, label = 'Content') {
-  if (navigator.clipboard && window.isSecureContext) {
-    return navigator.clipboard.writeText(text)
-      .then(() => showToast(`${label} copied! 📋`, 'success'));
-  } else {
-    // Fallback
-    const el = document.createElement('textarea');
-    el.value = text;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    showToast(`${label} copied! 📋`, 'success');
-  }
-}
-
-// ── Debounce Utility ──────────────────────────────────────────────────────────
-function debounce(fn, wait) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), wait);
-  };
-}
-
-// ── Page Load Animation ───────────────────────────────────────────────────────
+// ── Page Loader ───────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  // Hide loader
   setTimeout(() => {
     const loader = document.getElementById('pageLoader');
     if (loader) loader.classList.add('loaded');
-  }, 300);
+  }, prefersReducedMotion ? 0 : 280);
 });
 
-// ── Initialize on DOM Ready ───────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Apply saved theme
   applyTheme(getTheme());
 
-  // Theme toggle
   const toggle = document.getElementById('themeToggle');
   if (toggle) toggle.addEventListener('click', toggleTheme);
 
-  // Navbar effects
-  initNavbarScroll();
-
-  // Scroll animations
+  initNavbar();
   initScrollAnimations();
-
-  // Smooth scroll
+  initCounters();
   initSmoothScroll();
 
-  // Configure marked.js for markdown parsing
-  if (typeof marked !== 'undefined') {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-      headerIds: false,
-      mangle: false
-    });
+  if (window.location.pathname === '/') {
+    window.addEventListener('load', () => { initParallax(); initCursorDot(); });
+  } else {
+    initCursorDot();
   }
 
-  // Keyboard shortcut: Ctrl+/ to focus chat input
-  document.addEventListener('keydown', (e) => {
+  if (typeof marked !== 'undefined') {
+    marked.setOptions({ breaks: true, gfm: true });
+  }
+
+  // Ctrl+/ → focus chat input
+  document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === '/') {
       e.preventDefault();
-      const chatInput = document.getElementById('chatInput');
-      if (chatInput) {
-        chatInput.focus();
-        chatInput.select();
-      }
+      const inp = document.getElementById('chatInput');
+      if (inp) { inp.focus(); inp.select(); }
     }
   });
-
-  // Add transition to body after load
-  setTimeout(() => {
-    document.body.style.transition = 'background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s';
-  }, 500);
 });
 
-// ── Parallax Effect on Hero Images (if on homepage) ───────────────────────────
-if (window.location.pathname === '/') {
-  let mouseMoveHandler = null;
-  
-  window.addEventListener('load', () => {
-    const imgs = document.querySelectorAll('.hero-img');
-    if (imgs.length === 0) return;
-
-    mouseMoveHandler = debounce((e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      
-      imgs.forEach((img, i) => {
-        const speed = (i + 1) * 8;
-        const translateX = x * speed;
-        const translateY = y * speed;
-        const scale = 1 + (i * 0.015);
-        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-      });
-    }, 10);
-
-    document.addEventListener('mousemove', mouseMoveHandler);
-  });
-}
-
-// ── Export for use in templates ───────────────────────────────────────────────
+// ── Exports ───────────────────────────────────────────────────────────────────
 window.showToast = showToast;
 window.copyToClipboard = copyToClipboard;
