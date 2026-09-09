@@ -112,11 +112,11 @@ AGENT_CONFIG = {
     # ----------------------------------------------------------
     "model_settings": {
         # ── Groq models (fast, free) ──────────────────────────
-        # "llama-3.3-70b-versatile"   ← Best quality (recommended)
-        # "llama-3.1-8b-instant"      ← Fastest response
+        # "llama3-70b-8192"           ← Best quality (recommended)
+        # "llama3-8b-8192"            ← Fastest response
         # "mixtral-8x7b-32768"        ← Good for long outputs
         # "gemma2-9b-it"              ← Google Gemma 2
-        "model_id":        "llama-3.3-70b-versatile",
+        "model_id":        "llama3-70b-8192",
         "max_tokens":      1024,
         "temperature":     0.7,
         "top_p":           0.9,
